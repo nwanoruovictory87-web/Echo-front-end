@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.video-call-end-bar span {
+  background-color: rgba(29, 28, 28, 0.527);
+  backdrop-filter: blur(1px);
+}
+.video-call-end-bar .phone {
+  background-color: rgba(255, 0, 0, 0.644);
+}
+.video-call-end-bar {
+  background-color: rgba(223, 219, 219, 0.623);
+}
+.get-started {
+  transition: all ease-in;
+  animation: textZoom 2.5s infinite;
+}
+@keyframes textZoom {
+  20% {
+    font-size: 12px;
+  }
+  40% {
+    font-size: 14px;
+  }
+  60% {
+    font-size: 16px;
+  }
+  80% {
+    font-size: 18px;
+  }
+  100% {
+    font-size: 20px;
+    color: white;
+    background-color: blue;
+  }
+}
+.file-in {
+  visibility: hidden;
+}
+.text-box-left {
+  box-shadow: 4px 2px 4px 2px rgba(0, 0, 0, 0.3);
+}
+.text-box-right {
+  box-shadow: 4px 2px 4px 2px rgba(0, 0, 0, 0.3);
+}
+.text-image {
+  box-shadow: 4px 2px 4px 2px rgba(0, 0, 0, 0.3);
+}
