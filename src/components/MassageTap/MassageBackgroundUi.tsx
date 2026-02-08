@@ -3,6 +3,9 @@ import MassageBackButton from "./MassageBackButton";
 import MassageText from "./MassageText";
 import { io } from "socket.io-client";
 import { useState, useEffect } from "react";
+import { Picker } from "emoji-mart";
+import { Emoji } from "emoji-mart";
+
 //*=============== echo types
 type EchoNumber = {
   number?: string;
@@ -195,6 +198,7 @@ function MassageBackgroundUi() {
               <span className="flex w-full h-14 pl-4 pr-4 pt-1 pb-1  rounded-full bg-[#f9f9f9] items-center">
                 <i className="fas fa-microphone text-gray-400 mr-2 text-2xl"></i>
                 <i className="fas fa-smile text-gray-400 mr-2 text-2xl"></i>
+                <span></span>
                 <input
                   className="w-full h-12 pl-2 text-black border-l-2 border-gray-400 massage-in-test"
                   placeholder="Whats on your mind?"
