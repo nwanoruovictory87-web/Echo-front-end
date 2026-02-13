@@ -1,11 +1,13 @@
 import { useState, useRef } from "react";
 import Login from "./LoginWeb";
+import SingUpNumber from "./SingUpNumberWeb";
 
 function SignUp() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const loginWeb = useRef(null);
   const signUpWeb = useRef(null);
+  const signUpNumberWeb = useRef(null);
   function signUpNumber() {
     const firstNBackground = document.querySelector(
       ".user-name",
@@ -54,8 +56,10 @@ function SignUp() {
         number: res.number,
       };
       localStorage.setItem(ECHO, JSON.stringify(userNumber));
-      const clientUrl = "/sign/up/number";
-      window.location.replace(clientUrl);
+      signUpWeb ? (signUpWeb.current.style.display = "none") : null;
+      signUpNumberWeb
+        ? (signUpNumberWeb.current.style.display = "block")
+        : null;
     } catch (error) {
       console.log(error);
     }
@@ -83,7 +87,7 @@ function SignUp() {
   return (
     <div className="w-full">
       <div ref={signUpWeb}>
-        <span className="flex justify-center mt-20">
+        <span className="flex justify-center pt-20">
           <h2 className="text-3xl mt-3">Your Profile</h2>
         </span>
         <div className="flex justify-center mt-20 ml-14 mr-14">
@@ -92,13 +96,13 @@ function SignUp() {
           </span>
           <span className="flex w-[80%] flex-col gap-2">
             <input
-              className="user-name border-b-2 border-blue-700"
+              className="user-name border-b-2 border-blue-700 bg-[#f9f9f9]"
               placeholder="Username"
               value={username}
               onChange={usernameF}
             ></input>
             <input
-              className="user-password border-b-2 border-blue-700"
+              className="user-password border-b-2 border-blue-700 bg-[#f9f9f9]"
               placeholder="Password"
               value={password}
               onChange={PasswordF}
@@ -129,6 +133,9 @@ function SignUp() {
       </div>
       <div className="hidden" ref={loginWeb}>
         <Login loginWeb={loginWeb} signUpWeb={signUpWeb} />
+      </div>
+      <div className="hidden" ref={signUpNumberWeb}>
+        <SingUpNumber />
       </div>
     </div>
   );

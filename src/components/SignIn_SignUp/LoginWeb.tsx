@@ -124,13 +124,13 @@ function Login(props) {
         </span>
         <span className="flex w-[80%] flex-col gap-2">
           <input
-            className="phone-in border-b-2 border-blue-700"
+            className="phone-in border-b-2 border-blue-700 bg-[#f9f9f9]"
             placeholder="Echo Number"
             value={phoneInput}
             onChange={phoneF}
           ></input>
           <input
-            className="password-in border-b-2 border-blue-700"
+            className="password-in border-b-2 border-blue-700 bg-[#f9f9f9]"
             placeholder="Password"
             value={passwordInput}
             onChange={PasswordF}

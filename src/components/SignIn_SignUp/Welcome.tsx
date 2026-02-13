@@ -5,7 +5,6 @@ import { useRef } from "react";
 function Welcome() {
   const mobileView = useRef(null);
   const webSingup = useRef(null);
-  const webLogin = useRef(null);
   const mobileBackgroundView = useRef(null);
   function singUpMoblie() {
     const url = "/sign/up";
@@ -21,17 +20,17 @@ function Welcome() {
     return;
   }
   return (
-    <div className="bg-[#2563eb] h-screen w-screen  sm:min-[450px]:flex">
+    <div className="bg-[#2563eb] h-screen w-screen sm:min-[800px]:flex">
       <img
         src={Image}
-        className="w-full h-[410px] image-background sm:min-[450px]:h-full sm:min-[450px]:w-[55%] "
+        className="w-full h-[410px] image-background sm:min-[800px]:h-full sm:min-[800px]:w-[55%] "
         alt="image"
       ></img>
       <div
-        className="sm:min-[450px]:w-[45%] bg-[#2563eb] sm:min-[450px]:flex sm:min-[450px]:justify-center"
+        className="sm:min-[800px]:w-[45%] bg-[#2563eb] sm:min-[800px]:flex sm:min-[800px]:justify-center"
         ref={mobileBackgroundView}
       >
-        <div className="welcome-content-box sm:min-[450px]:w-[400px] sm:min-[450px]:mt-[10%] sm:min-[450px]:mb-[10%] sm:min-[450px]:rounded-xl">
+        <div className="welcome-content-box sm:min-[800px]:w-[400px] sm:min-[800px]:mt-[10%] sm:min-[800px]:mb-[10%] sm:min-[800px]:rounded-xl">
           <div className="moblie-view flex flex-col gap-10 " ref={mobileView}>
             <span className="ml-5 mr-5 mt-10 block">
               <h2 className="text-5xl font-bold text-white">
@@ -46,26 +45,22 @@ function Welcome() {
             </span>
             <span className="block ml-5 mr-5 pb-7">
               <button
-                className="get-started w-full h-16 bg-white rounded-full  text-[20px] font-bold text-gray-700 sm:min-[450px]:hidden "
+                className="get-started w-full h-16 bg-white rounded-full  text-[20px] font-bold text-gray-700 sm:min-[800px]:hidden "
                 onClick={singUpMoblie}
               >
                 Get Started
               </button>
               <button
-                className="hidden get-started w-full h-16 bg-white rounded-full  text-[20px] font-bold text-gray-700 sm:min-[450px]:block"
+                className="hidden get-started w-full h-16 bg-white rounded-full  text-[20px] font-bold text-gray-700 sm:min-[800px]:block"
                 onClick={singUpWeb}
               >
                 Get Started
               </button>
             </span>
           </div>
-          <div
-            className="register-view hidden max-[450px]:hidden"
-            ref={webSingup}
-          >
+          <div className="register-view hidden " ref={webSingup}>
             <SignUp />
           </div>
-          <div className="login-view hidden" ref={webLogin}></div>
         </div>
       </div>
     </div>
