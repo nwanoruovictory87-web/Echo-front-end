@@ -1,9 +1,9 @@
 import MassageBackgroundUi from "./MassageBackgroundUi";
 
-function MassageTap() {
+function MassageTap(props) {
   return (
     <>
-      <MassageBackgroundUi />
+      <MassageBackgroundUi body={props.body} />
     </>
   );
 }

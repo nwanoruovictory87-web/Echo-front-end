@@ -16,7 +16,6 @@ function Welcome() {
       : null;
     mobileView ? (mobileView.current.style.display = "none") : null;
     webSingup ? (webSingup.current.style.display = "block") : null;
-
     return;
   }
   return (

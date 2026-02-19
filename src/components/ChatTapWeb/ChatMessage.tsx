@@ -16,6 +16,7 @@ type ChatMessageProp = {
     friendName?: string;
     friendMassages?: string[];
   };
+  number: string | undefined;
 };
 //*=============== chat time prop
 type ChatTimeProps = {
@@ -36,15 +37,25 @@ type ChatData = {
   time: string;
 };
 function ChatMessage(props: ChatMessageProp) {
+  console.log(props);
   const color: string = "";
   const [textMassage, setTextMassage] = useState<string>("online");
   const [textMassageCount, setTextMassageCount] = useState<number>(0);
   const [lastMassageTime, setLasMassageTime] = useState<string>("");
+  const [numberInUse, setNumberInUse] = useState("");
   const name = props.body.friendName;
   const friendNumber = props.body.friendNumber;
   useEffect(() => {
     socket.emit("join-room", userNumber);
   }, []);
+  useEffect(() => {
+    if (props.number) {
+      numberInUseFunc();
+    }
+  }, [props.number]);
+  function numberInUseFunc() {
+    setNumberInUse(props.number);
+  }
   //*=============== get new massage count
   function massageCount() {
     setTextMassageCount((prevTextMassageCount) => prevTextMassageCount + 1);
@@ -94,20 +105,22 @@ function ChatMessage(props: ChatMessageProp) {
       localStorage.setItem(Echo_FriendsList, JSON.stringify(friendListUpdated));
     }
   }
-
   //*=============== reacive new massages
   useEffect(() => {
-    socket.on("recive-massage", (massage) => {
-      const senderNumber = massage.from;
-      if (senderNumber !== friendNumber) return;
-      const senderMassage = massage.massage;
-      console.log(massage);
-      const massageData: ChatData = massage;
-      updateChatHistory(massageData, senderNumber);
-      setTextMassage(senderMassage);
-      massageCount();
-    });
-  }, []);
+    if (numberInUse) {
+      socket.on("recive-massage", (massage) => {
+        const senderNumber = massage.from;
+        if (numberInUse === senderNumber) return;
+        if (senderNumber !== friendNumber) return;
+        const senderMassage = massage.massage;
+        console.log(massage);
+        const massageData: ChatData = massage;
+        updateChatHistory(massageData, senderNumber);
+        setTextMassage(senderMassage);
+        massageCount();
+      });
+    }
+  }, [numberInUse]);
   //*=============== update online status to last chat once on each render
   useEffect(() => {
     const Echo_FriendsList = "Echo_FriendsList";

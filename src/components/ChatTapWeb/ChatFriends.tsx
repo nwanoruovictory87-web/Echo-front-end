@@ -31,15 +31,16 @@ const userValue: EchoNumber = JSON.parse(localStorage.getItem(ECHO_Number));
 const userNumber = userValue ? userValue.number : null;
 
 //
-function ChatFriends() {
+function ChatFriends(props) {
   //*=============== get friends list
   const [friendList, setFriendList] = useState<FriendListOfArrayObject>([]);
+  const [numberInUse, setNumberInUse] = useState("");
   //*=============== load to massage box
   function massage(e: EchoFriend): void {
-    const ECHO_Friend = "Friend_Chat";
-    localStorage.setItem(ECHO_Friend, JSON.stringify(e));
-    const url = "/massage";
-    window.location.replace(url);
+    props.body.ref.current = e;
+    props.body.setData();
+    console.log(e);
+    setNumberInUse(e.friendNumber);
   }
   //*=============== func to store freind list
   function updateFriendList(e: FriendListOfArrayObject): void {
@@ -54,6 +55,7 @@ function ChatFriends() {
       (() => {
         //*=============== call a function to store friends list
         updateFriendList(stordFriendList);
+        massage(stordFriendList[0]);
       })();
     }
   }, []);
@@ -99,7 +101,7 @@ function ChatFriends() {
               key={i}
             >
               <span className="inline-block w-14 h-14 rounded-full bg-gray-300"></span>
-              <ChatMessage body={e} />
+              <ChatMessage body={e} number={numberInUse} />
             </div>
           );
         })}

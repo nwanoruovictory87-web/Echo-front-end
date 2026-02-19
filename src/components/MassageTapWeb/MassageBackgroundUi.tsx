@@ -34,54 +34,82 @@ const ECHO_Number = "Echo_Number";
 const userValue: EchoNumber = JSON.parse(localStorage.getItem(ECHO_Number));
 //*=============== get friend data
 const ECHO_Friend = "Friend_Chat";
-const friendValue = JSON.parse(localStorage.getItem(ECHO_Friend));
+
 const Echo_FriendsList = "Echo_FriendsList";
 const storedFriendList = JSON.parse(localStorage.getItem(Echo_FriendsList));
-function MassageBackgroundUi() {
+function MassageBackgroundUi(props) {
+  //*=============== get friend data from props
+  const [friendValue, setFriendValue] = useState();
   const [chat, setChat] = useState<object[]>([]);
   const [input, setInput] = useState<string>("");
   const [fileInput, setFileInput] = useState("");
   const [fileView, setFileView] = useState();
+  const [renderSwicth, setRenderSwicth] = useState(true);
   //*=============== connnect to users room
   useEffect(() => {
     const userNumber = userValue.number;
     socket.emit("join-room", userNumber);
-  }, []);
+  }, [friendValue]);
+  function reciveText(fd) {
+    const friendData = fd;
+
+    socket.on("recive-massage", (data) => {
+      const from = data.from;
+      console.log("new massage");
+      if (from !== friendData.friendNumber) return;
+      const storedChat = [...chat, data];
+      console.log(storedChat);
+      //*================= update chat
+      setChat((chat) => (chat = storedChat));
+      //updateLocalChatStorage();
+      //*=============== move new massage to top after 300ms
+      setTimeout(() => {
+        const chatEndScroll = document.querySelector(".chat-end");
+        chatEndScroll?.scrollIntoView({ behavior: "smooth", block: "end" });
+      }, 300);
+    });
+  }
   //*=============== get chat history on render once
-  useEffect(() => {
-    for (let i = 0; i < storedFriendList.length; i++) {
-      const massageNumber = friendValue.friendNumber;
-      if (massageNumber === storedFriendList[i].friendNumber) {
-        const oldMassage = storedFriendList[i].friendMassages;
-        (() => {
-          setChat(oldMassage);
-        })();
-      }
-    }
-  }, []);
-  //*=============== scroll to the bottom of chat
-  useEffect(() => {
+  function upDateChat() {
+    const oldMassage = props.body && props.body.friendMassages;
+    setChat((c) => oldMassage);
+    console.log(returnChat());
+    setFriendValue(props.body);
+    reciveText(props.body);
+
+    //*=============== scroll to the bottom of chat
     setTimeout(() => {
       const chatEndScroll = document.querySelector(".chat-end");
       chatEndScroll?.scrollIntoView({ behavior: "smooth", block: "end" });
     }, 800);
-  }, []);
-
+  }
+  function returnChat() {
+    return chat;
+  }
+  if (chat) {
+    console.log("outside render");
+    if (renderSwicth) {
+      if (props.body) {
+        console.log("inside render");
+        setRenderSwicth(false);
+        upDateChat();
+      }
+    }
+  }
+  /*if (chat.length === 0) {
+    upDateChat();
+  }*/
   function updateLocalChatStorage() {}
   //*=============== get new text masssage
-  socket.on("recive-massage", (data) => {
-    const from = data.from;
-    if (from !== friendValue.friendNumber) return;
-    const storedChat: object[] = [...chat, data];
-    //*================= update chat
-    setChat((c) => (c = storedChat));
-    updateLocalChatStorage();
-    //*=============== move new massage to top after 300ms
-    setTimeout(() => {
-      const chatEndScroll = document.querySelector(".chat-end");
-      chatEndScroll?.scrollIntoView({ behavior: "smooth", block: "end" });
-    }, 300);
-  });
+
+  /*
+  if (props.body) {
+    if (chat) {
+      setUpdateChat(true);
+    }
+  }
+  */
+
   //*================= update input onchange
   function storeInput(e): void {
     setInput(e.target.value);
@@ -154,11 +182,12 @@ function MassageBackgroundUi() {
       date: `${day}/${month}/${year}`,
       time: `${hour}:${minite}${amOrPm}`,
     };
-    console.log(data);
+    //console.log(data);
     setInput("");
     //*=============== update chat
     //*=============== send text massage
     socket.emit("send-massage", data, room);
+
     const storedChat: object[] = chat.length !== 0 ? [...chat, data] : [data];
     setChat(storedChat);
     //*=============== move new massage to top after 300ms
@@ -183,26 +212,28 @@ function MassageBackgroundUi() {
         </div>
         <div className="">
           <span className="block fixed w-[40%] h-[30px] bg-[#f9f9f9]  mt-9 min-w-[380px]"></span>
-          <span className="block fixed  h-[27px] rounded-tl-[60px] rounded-tr-[80px] bg-[#2563eb]  mr-[140.5px] mt-[20px] z-10"></span>
+          <div className="fixed w-[40%] pr-[140px] z-10  min-w-[380px]">
+            <span className="block  w-full  h-[27px] rounded-tl-[60px] rounded-tr-[80px] bg-[#2563eb]  mr-[140.5px] mt-[20px] z-10"></span>
+          </div>
         </div>
         <span className="fixed z-10 min-w-[380px]">
           <MassageBackButton body={friendValue} />
         </span>
       </div>
-      <div>
-        <div className="bg-[#2563eb] absolute w-[40%] min-h-screen max-h-fit rounded-tl-[40px] min-w-[380px]">
+      <div className="">
+        <div className="bg-[#2563eb] fixed overflow-y-scroll w-[40%] min-h-screen max-h-screen rounded-tl-[40px] min-w-[380px] masssage-div">
           <div className="mt-40 ml-7 mr-7 w-[87%] h-fit pb-28">
             <MassageText body={chat} />
             <div className="chat-end pb-72 absolute "></div>
           </div>
-          <div className="fixed bottom-0 bg-[#2563eb] pt-2 pb-8 w-[100%] pr-12 ">
-            <div className="w-full ml-7 mr-7 flex">
-              <span className="flex w-full h-14 pl-4 pr-4 pt-1 pb-1  rounded-full bg-[#f9f9f9] items-center">
+          <div className="fixed bottom-0 bg-[#2563eb] pt-2 pb-8  w-[40%] min-w-[380px]">
+            <div className=" ml-7 mr-7 flex">
+              <span className="flex w-full h-14 pl-4 pr-4 pt-1 pb-1  rounded-full bg-[#f9f9f9] items-center min-w-[270px]">
                 <i className="fas fa-microphone text-gray-400 mr-2 text-2xl"></i>
                 <i className="fas fa-smile text-gray-400 mr-2 text-2xl"></i>
-                <span></span>
+
                 <input
-                  className="w-full h-12 pl-2 text-black border-l-2 border-gray-400 massage-in-test"
+                  className=" h-12 w-full pl-2 text-black border-l-2 border-gray-400 massage-in-test"
                   placeholder="Whats on your mind?"
                   value={input}
                   onChange={storeInput}

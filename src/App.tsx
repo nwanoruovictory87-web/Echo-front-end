@@ -9,6 +9,8 @@ import Login from "./components/SignIn_SignUp/Login";
 import VideoCall from "./components/CallTap/VideoCall";
 import AudioCall from "./components/CallTap/AudioCall";
 import SingUpNumber from "./components/SignIn_SignUp/SingUpNumber";
+//*=============== mobile
+import ChatTapWeb from "./components/ChatTapWeb/ChatTap";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 function App() {
@@ -27,6 +29,7 @@ function App() {
     { path: "/sign/up", element: <SignUp /> },
     { path: "/sign/up/number", element: <SingUpNumber /> },
     { path: "/chat", element: <ChatTap /> },
+    { path: "/chat/web", element: <ChatTapWeb /> },
     { path: "/chat/add/contact", element: <ChatAddContact /> },
     { path: "/massage", element: <MassageTap /> },
     { path: "/video/call", element: <VideoCall /> },

@@ -25,7 +25,7 @@ function MassageText(props: { body: ChatType }) {
           if (e.from !== userNumber && e.type === "text") {
             return (
               <span
-                className="block w-fit max-w-[300px] h-fit bg-[#f1f1f1] p-[12px] pl-[15px] pr-[15px] rounded-bl-[30px] rounded-e-3xl overflow-hidden text-box-right"
+                className="block w-fit max-w-[450px] h-fit bg-[#f1f1f1] p-[12px] pl-[15px] pr-[15px] rounded-bl-[30px] rounded-e-3xl overflow-hidden text-box-right"
                 key={i}
               >
                 <h5 className="text-[#242222c5] text-xl font-[Inter] break-words">
@@ -37,12 +37,12 @@ function MassageText(props: { body: ChatType }) {
             if (e.from === userNumber) {
               return (
                 <span
-                  className="ml-auto block w-fit h-38 max-w-[300px] max-h-38 overflow-hidden text-image rounded-xl p-0.5 bg-blue-500"
+                  className="ml-auto block w-fit h-38 max-w-[450px] max-h-38 overflow-hidden text-image rounded-xl p-0.5 bg-blue-500"
                   key={i}
                 >
                   <img
                     src={image}
-                    className="w-[300px] h-38 rounded-xl"
+                    className="w-[450px] h-38 rounded-xl"
                     alt="image"
                   ></img>
                 </span>
@@ -50,12 +50,12 @@ function MassageText(props: { body: ChatType }) {
             } else if (e.from !== userNumber) {
               return (
                 <span
-                  className="block w-fit h-38 max-w-[300px] max-h-38 overflow-hidden text-image rounded-xl p-0.5 bg-[#f1f1f1]"
+                  className="block w-fit h-38 max-w-[450px] max-h-38 overflow-hidden text-image rounded-xl p-0.5 bg-[#f1f1f1]"
                   key={i}
                 >
                   <img
                     src={image}
-                    className="w-[300px] h-38 rounded-xl"
+                    className="w-[450px] h-38 rounded-xl"
                     alt="image"
                   ></img>
                 </span>
@@ -66,17 +66,17 @@ function MassageText(props: { body: ChatType }) {
               return (
                 <>
                   <span
-                    className="ml-auto block w-fit h-38 max-w-[300px] max-h-38 overflow-hidden text-image rounded-xl p-0.5 bg-blue-500"
+                    className="ml-auto block w-fit h-38 max-w-[450px] max-h-38 overflow-hidden text-image rounded-xl p-0.5 bg-blue-500"
                     key={i}
                   >
                     <img
                       src={image}
-                      className="w-[300px] h-38 rounded-xl"
+                      className="w-[450px] h-38 rounded-xl"
                       alt="image"
                     ></img>
                   </span>
                   <span
-                    className="ml-auto block w-fit max-w-[300px] h-fit bg-blue-500 p-[12px] pl-[15px] pr-[15px] rounded-br-[30px] rounded-s-3xl overflow-hidden text-box-left"
+                    className="ml-auto block w-fit max-w-[450px] h-fit bg-blue-500 p-[12px] pl-[15px] pr-[15px] rounded-br-[30px] rounded-s-3xl overflow-hidden text-box-left"
                     key={i + 1}
                   >
                     <h5 className="text-[#f9f9f9] text-xl font-[Inter] break-words">
@@ -89,17 +89,17 @@ function MassageText(props: { body: ChatType }) {
               return (
                 <>
                   <span
-                    className="block w-fit h-38 max-w-[300px] max-h-38 overflow-hidden text-image rounded-xl p-0.5 bg-[#f1f1f1]"
+                    className="block w-fit h-38 max-w-[450px] max-h-38 overflow-hidden text-image rounded-xl p-0.5 bg-[#f1f1f1]"
                     key={i}
                   >
                     <img
                       src={image}
-                      className="w-[300px] h-38 rounded-xl"
+                      className="w-[450px] h-38 rounded-xl"
                       alt="image"
                     ></img>
                   </span>
                   <span
-                    className="block w-fit max-w-[300px] h-fit bg-[#f1f1f1] p-[12px] pl-[15px] pr-[15px] rounded-bl-[30px] rounded-e-3xl overflow-hidden text-box-right"
+                    className="block w-fit max-w-[450px] h-fit bg-[#f1f1f1] p-[12px] pl-[15px] pr-[15px] rounded-bl-[30px] rounded-e-3xl overflow-hidden text-box-right"
                     key={i + 1}
                   >
                     <h5 className="text-[#888] text-xl font-[Inter] break-words">
@@ -113,7 +113,7 @@ function MassageText(props: { body: ChatType }) {
             if (e.type === "text") {
               return (
                 <span
-                  className="ml-auto block w-fit max-w-[300px] h-fit bg-blue-500 p-[12px] pl-[15px] pr-[15px] rounded-br-[30px] rounded-s-3xl overflow-hidden text-box-left"
+                  className="ml-auto block w-fit max-w-[450px] h-fit bg-blue-500 p-[12px] pl-[15px] pr-[15px] rounded-br-[30px] rounded-s-3xl overflow-hidden text-box-left"
                   key={i}
                 >
                   <h5 className="text-[#f9f9f9] text-xl font-[Inter] break-words">

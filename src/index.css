@@ -59,3 +59,10 @@
   min-width: 61.5rem;
 }
 */
+body {
+  scrollbar-gutter: stable;
+}
+.masssage-div {
+  border-right: 4px solid #2563eb;
+  box-sizing: border-box;
+}

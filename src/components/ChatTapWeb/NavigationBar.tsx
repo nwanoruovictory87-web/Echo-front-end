@@ -1,7 +1,7 @@
 import ChatFriends from "./ChatFriends";
 //import ChatContactDiplay from "./ChatContactDisplay";
 import { useState, useEffect } from "react";
-function NavigationBar() {
+function NavigationBar(props) {
   useEffect(() => {
     async function findFriends() {
       const ECHO_Number = "Echo_Number";
@@ -114,7 +114,7 @@ function NavigationBar() {
           </span>
         </div>
       </div>
-      <ChatFriends />
+      <ChatFriends body={props.body} />
     </>
   );
 }

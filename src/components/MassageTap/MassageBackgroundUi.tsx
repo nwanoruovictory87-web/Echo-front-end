@@ -171,7 +171,7 @@ function MassageBackgroundUi() {
   return (
     <div className="">
       <div className="relative">
-        <div className="w-full h-[40.2px] bg-[#f9f9f9] fixed z-10 top-0"></div>
+        <div className="w-full h-[40.2px] bg-[#f9f9f9] fixed z-10 top-0 "></div>
         <span className="block fixed w-screen h-[105.5px] bg-[#2563eb] mt-[40px] z-10"></span>
         <div className="w-[140px] h-[100px] bg-[#f9f9f9] rounded-bl-[85px] fixed z-10 mt-9 right-0">
           <span className="block w-[140px] h-[80px] rounded-bl-[40px] bg-[#f9f9f9]">

@@ -4,8 +4,8 @@ function ChatAdd() {
     window.location.assign(url);
   }
   return (
-    <div className="w-[100%] bg-yellow-300 border-r-4">
-      <div className=" ">
+    <div className="">
+      <div className="relative">
         <span
           className="bg-blue-700 w-14 h-14 rounded-full inline-block"
           onClick={addContact}
