@@ -44,50 +44,58 @@ function MassageBackgroundUi(props) {
   const [input, setInput] = useState<string>("");
   const [fileInput, setFileInput] = useState("");
   const [fileView, setFileView] = useState();
-  const [renderSwicth, setRenderSwicth] = useState(true);
   //*=============== connnect to users room
   useEffect(() => {
     const userNumber = userValue.number;
     socket.emit("join-room", userNumber);
-  }, [friendValue]);
-  function reciveText(fd) {
-    const friendData = fd;
+  }, []);
 
-    socket.on("recive-massage", (data) => {
+  //*=============== get chat history on render once and clean up
+  useEffect(() => {
+    console.log(props.body, "props change");
+    const friendData = props.body;
+    const handelIncomingMassage = (data) => {
       const from = data.from;
+      console.log(from);
       console.log("new massage");
       if (from !== friendData.friendNumber) return;
       const storedChat = [...chat, data];
       console.log(storedChat);
       //*================= update chat
-      setChat((chat) => (chat = storedChat));
+      setChat((prevChat) => {
+        if (prevChat.length !== 0) return [...prevChat, data];
+        if (prevChat.length === 0) return [data];
+      });
       //updateLocalChatStorage();
       //*=============== move new massage to top after 300ms
       setTimeout(() => {
         const chatEndScroll = document.querySelector(".chat-end");
         chatEndScroll?.scrollIntoView({ behavior: "smooth", block: "end" });
       }, 300);
-    });
-  }
-  //*=============== get chat history on render once
-  function upDateChat() {
-    const oldMassage = props.body && props.body.friendMassages;
-    setChat((c) => oldMassage);
-    console.log(returnChat());
-    setFriendValue(props.body);
-    reciveText(props.body);
+    };
+    if (props.body) {
+      console.log("inside render");
+      (() => {
+        const oldMassage = props.body && props.body.friendMassages;
+        setChat((c) => oldMassage);
+        setFriendValue(props.body);
+        //*=============== scroll to the bottom of chat
+        setTimeout(() => {
+          const chatEndScroll = document.querySelector(".chat-end");
+          chatEndScroll?.scrollIntoView({ behavior: "smooth", block: "end" });
+        }, 800);
+      })();
 
-    //*=============== scroll to the bottom of chat
-    setTimeout(() => {
-      const chatEndScroll = document.querySelector(".chat-end");
-      chatEndScroll?.scrollIntoView({ behavior: "smooth", block: "end" });
-    }, 800);
-  }
-  function returnChat() {
-    return chat;
-  }
-  if (chat) {
+      socket.on("recive-massage", handelIncomingMassage);
+    }
+    return () => {
+      socket.off("recive-massage", handelIncomingMassage);
+      console.log(`off ${props.body && props.body.friendNumber}`);
+    };
+  }, [props.body]);
+  /*if (chat) {
     console.log("outside render");
+    console.log(props.body);
     if (renderSwicth) {
       if (props.body) {
         console.log("inside render");
@@ -95,7 +103,16 @@ function MassageBackgroundUi(props) {
         upDateChat();
       }
     }
+    if (!renderSwicth) {
+      if (props.body._id !== friendValue._id) {
+        if (props.body) {
+          upDateChat();
+        }
+      }
+    }
   }
+    */
+
   /*if (chat.length === 0) {
     upDateChat();
   }*/
@@ -187,9 +204,10 @@ function MassageBackgroundUi(props) {
     //*=============== update chat
     //*=============== send text massage
     socket.emit("send-massage", data, room);
-
-    const storedChat: object[] = chat.length !== 0 ? [...chat, data] : [data];
-    setChat(storedChat);
+    setChat((prevChat) => {
+      if (prevChat.length !== 0) return [...prevChat, data];
+      if (prevChat.length === 0) return [data];
+    });
     //*=============== move new massage to top after 300ms
     setTimeout(() => {
       const chatEndScroll = document.querySelector(".chat-end");
@@ -200,66 +218,73 @@ function MassageBackgroundUi(props) {
   return (
     <div className="flex min-w-[380px]">
       <div className="relative ">
-        <div className=" h-[40.2px] w-[40%] min-w-[380px] bg-[#f9f9f9] fixed z-10 top-0"></div>
-        <span className="block fixed w-[40%] min-w-[380px] h-[105.5px] bg-[#2563eb] mt-[40px] z-10"></span>
-        <div className="fixed w-[40%] min-w-[380px] z-10 mt-9 flex justify-end">
+        <div className=" h-[40.2px] w-[40%] min-w-[380px] fixed z-10 top-0 pr-[19px] bg-transparent">
+          <div className="bg-[#f9f9f9] h-[40.2px]  "></div>
+        </div>
+        <div className="fixed w-[40%] min-w-[380px] h-[105.5px] mt-[40px] z-10 pr-[19px] bg-transparent">
+          <span className="block bg-[#2563eb] h-[105.5px] "></span>
+        </div>
+
+        <div className="fixed w-[40%] min-w-[380px] z-10 mt-9 flex justify-end pr-[19px] bg-transparent">
           <div className="w-[140px] h-[100px] bg-[#f9f9f9] rounded-bl-[85px] ">
             <span className="block w-[140px] h-[80px] rounded-bl-[40px] bg-[#f9f9f9]">
               <MassageVideoChat />
             </span>
-            <span className="block w-[140px] h-[30px] rounded-tr-[80px] bg-[#2563eb]"></span>
+            <span className="block w-[140px] h-[30px] rounded-tr-[80px] bg-[#2563eb] pr-5"></span>
           </div>
         </div>
+
         <div className="">
-          <span className="block fixed w-[40%] h-[30px] bg-[#f9f9f9]  mt-9 min-w-[380px]"></span>
-          <div className="fixed w-[40%] pr-[140px] z-10  min-w-[380px]">
-            <span className="block  w-full  h-[27px] rounded-tl-[60px] rounded-tr-[80px] bg-[#2563eb]  mr-[140.5px] mt-[20px] z-10"></span>
+          <div className="fixed w-[40%] pr-[160px] z-10  min-w-[380px]">
+            <span className="block  w-full  h-[27px] rounded-tl-[60px] rounded-tr-[80px] bg-[#2563eb]  mr-[140.5px] mt-[20px] z-10 "></span>
           </div>
         </div>
-        <span className="fixed z-10 min-w-[380px]">
+        <span className="fixed z-10 min-w-[380px] ">
           <MassageBackButton body={friendValue} />
         </span>
       </div>
-      <div className="">
-        <div className="bg-[#2563eb] fixed overflow-y-scroll w-[40%] min-h-screen max-h-screen rounded-tl-[40px] min-w-[380px] masssage-div">
-          <div className="mt-40 ml-7 mr-7 w-[87%] h-fit pb-28">
+      <div className="bg-[#2563eb] fixed overflow-y-scroll w-[40%] min-h-screen max-h-screen rounded-tl-[40px] min-w-[380px] masssage-div">
+        <div className="relative">
+          <div className="mt-40 ml-7 mr-7 w-[87%]  h-fit pb-28 ">
             <MassageText body={chat} />
             <div className="chat-end pb-72 absolute "></div>
           </div>
-          <div className="fixed bottom-0 bg-[#2563eb] pt-2 pb-8  w-[40%] min-w-[380px]">
-            <div className=" ml-7 mr-7 flex">
-              <span className="flex w-full h-14 pl-4 pr-4 pt-1 pb-1  rounded-full bg-[#f9f9f9] items-center min-w-[270px]">
-                <i className="fas fa-microphone text-gray-400 mr-2 text-2xl"></i>
-                <i className="fas fa-smile text-gray-400 mr-2 text-2xl"></i>
+          <div className="fixed bottom-0 w-[40%] min-w-[380px] pr-5 bg-transparent">
+            <div className="bg-[#2563eb] pt-2 pb-8   ">
+              <div className=" ml-7 mr-7 flex">
+                <span className="flex w-full h-14 pl-4 pr-4 pt-1 pb-1  rounded-full bg-[#f9f9f9] items-center min-w-[230px]">
+                  <i className="fas fa-microphone text-gray-400 mr-2 text-2xl"></i>
+                  <i className="fas fa-smile text-gray-400 mr-2 text-2xl"></i>
 
-                <input
-                  className=" h-12 w-full pl-2 text-black border-l-2 border-gray-400 massage-in-test"
-                  placeholder="Whats on your mind?"
-                  value={input}
-                  onChange={storeInput}
-                ></input>
-                <i
-                  className="fa-solid fa-paperclip text-gray-400 ml-2 text-2xl"
-                  onClick={focusFileOnClick}
-                ></i>
-                <input
-                  className="absolute file-in"
-                  type="file"
-                  value={fileInput}
-                  onChange={storeFileInput}
-                ></input>
-              </span>
-              <span className="ml-3 bg-[#f9f9f9] rounded-full pl-3 pb-3 pr-4">
-                <i
-                  className="fa-solid fa-paper-plane mt-4  text-[25px] text-[#2563eb]"
-                  onClick={sendMassage}
-                ></i>
-              </span>
-              {fileView && (
-                <span className="absolute right-28 w-48 h-38 bottom-[88px] rounded-xl">
-                  <img src={fileView} className="w-48 h-38 rounded-xl"></img>
+                  <input
+                    className=" h-12 w-full pl-2 text-black border-l-2 border-gray-400 massage-in-test"
+                    placeholder="Whats on your mind?"
+                    value={input}
+                    onChange={storeInput}
+                  ></input>
+                  <i
+                    className="fa-solid fa-paperclip text-gray-400 ml-2 text-2xl"
+                    onClick={focusFileOnClick}
+                  ></i>
+                  <input
+                    className="absolute file-in"
+                    type="file"
+                    value={fileInput}
+                    onChange={storeFileInput}
+                  ></input>
                 </span>
-              )}
+                <span className="ml-3 bg-[#f9f9f9] rounded-full pl-3 pb-3 pr-4">
+                  <i
+                    className="fa-solid fa-paper-plane mt-4  text-[25px] text-[#2563eb]"
+                    onClick={sendMassage}
+                  ></i>
+                </span>
+                {fileView && (
+                  <span className="absolute right-28 w-48 h-38 bottom-[88px] rounded-xl">
+                    <img src={fileView} className="w-48 h-38 rounded-xl"></img>
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -1,8 +1,18 @@
-function SingUpNumber() {
-  const ECHO = "Echo_Number";
-  const echoNumber = JSON.parse(localStorage.getItem(ECHO)) || null;
-  const userNumber = echoNumber.number;
-  console.log(userNumber);
+import { useEffect } from "react";
+
+type Number = {
+  body: string;
+};
+
+function SingUpNumber(props: Number) {
+  console.log(props);
+  useEffect(() => {
+    const ECHO = "Echo_Number";
+    const userNumber = {
+      number: props.body,
+    };
+    localStorage.setItem(ECHO, JSON.stringify(userNumber));
+  }, [props.body]);
   function chat() {
     const url = "/chat/web";
     window.location.assign(url);
@@ -10,7 +20,7 @@ function SingUpNumber() {
   return (
     <div className="w-full">
       <span className="flex justify-center">
-        <h5 className="mt-20 text-4xl font-bold text-blue-700">{userNumber}</h5>
+        <h5 className="mt-20 text-4xl font-bold text-blue-700">{props.body}</h5>
       </span>
       <span className="flex mt-10 justify-center mr-7 ml-7 text-center">
         <h5 className="text-xl font-semibold">

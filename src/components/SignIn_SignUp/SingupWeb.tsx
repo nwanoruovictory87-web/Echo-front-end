@@ -5,6 +5,7 @@ import SingUpNumber from "./SingUpNumberWeb";
 function SignUp() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [userNumber, setUserNumber] = useState<string>("");
   const loginWeb = useRef(null);
   const signUpWeb = useRef(null);
   const signUpNumberWeb = useRef(null);
@@ -50,12 +51,8 @@ function SignUp() {
         body: JSON.stringify(userData),
       });
       const res = await data.json();
-      const ECHO = "Echo_Number";
       if (res.status !== 201) return;
-      const userNumber = {
-        number: res.number,
-      };
-      localStorage.setItem(ECHO, JSON.stringify(userNumber));
+      setUserNumber(res.number);
       signUpWeb ? (signUpWeb.current.style.display = "none") : null;
       signUpNumberWeb
         ? (signUpNumberWeb.current.style.display = "block")
@@ -135,7 +132,7 @@ function SignUp() {
         <Login loginWeb={loginWeb} signUpWeb={signUpWeb} />
       </div>
       <div className="hidden" ref={signUpNumberWeb}>
-        <SingUpNumber />
+        <SingUpNumber body={userNumber} />
       </div>
     </div>
   );

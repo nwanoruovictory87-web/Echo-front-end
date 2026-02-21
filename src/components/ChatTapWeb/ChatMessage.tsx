@@ -37,7 +37,6 @@ type ChatData = {
   time: string;
 };
 function ChatMessage(props: ChatMessageProp) {
-  console.log(props);
   const color: string = "";
   const [textMassage, setTextMassage] = useState<string>("online");
   const [textMassageCount, setTextMassageCount] = useState<number>(0);

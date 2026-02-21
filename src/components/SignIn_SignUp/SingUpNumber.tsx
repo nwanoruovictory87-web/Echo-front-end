@@ -1,7 +1,7 @@
 function SingUpNumber() {
   const ECHO = "Echo_Number";
   const echoNumber = JSON.parse(localStorage.getItem(ECHO)) || null;
-  const userNumber = echoNumber.number;
+  const userNumber = echoNumber && echoNumber.number;
   console.log(userNumber);
   function chat() {
     const url = "/chat";

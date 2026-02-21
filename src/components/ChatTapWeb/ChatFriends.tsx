@@ -35,11 +35,11 @@ function ChatFriends(props) {
   //*=============== get friends list
   const [friendList, setFriendList] = useState<FriendListOfArrayObject>([]);
   const [numberInUse, setNumberInUse] = useState("");
+  const [friendDiv, setFriendDiv] = useState();
   //*=============== load to massage box
   function massage(e: EchoFriend): void {
     props.body.ref.current = e;
     props.body.setData();
-    console.log(e);
     setNumberInUse(e.friendNumber);
   }
   //*=============== func to store freind list
@@ -90,22 +90,26 @@ function ChatFriends(props) {
     }
   });
 
-  return (
-    <div>
-      {friendList &&
-        friendList.map((e, i) => {
-          return (
-            <div
-              className="w-[90%] mr-5 ml-5 mt-2 mb-2 flex h-16"
-              onClick={() => massage(e)}
-              key={i}
-            >
-              <span className="inline-block w-14 h-14 rounded-full bg-gray-300"></span>
-              <ChatMessage body={e} number={numberInUse} />
-            </div>
-          );
-        })}
-    </div>
-  );
+  function upDateOnNewFriends() {
+    const friendDivs =
+      friendList &&
+      friendList.map((e, i) => {
+        return (
+          <div
+            className="w-[90%] mr-5 ml-5 mt-2 mb-2 flex h-16"
+            onClick={() => massage(e)}
+            key={i}
+          >
+            <span className="inline-block w-14 h-14 rounded-full bg-gray-300"></span>
+            <ChatMessage body={e} number={numberInUse} />
+          </div>
+        );
+      });
+    setFriendDiv((prev) => (prev = friendDivs));
+  }
+  useEffect(() => {
+    upDateOnNewFriends();
+  }, [friendList]);
+  return <div>{friendDiv && friendDiv}</div>;
 }
 export default ChatFriends;
