@@ -14,9 +14,11 @@ type ChatMessageProp = {
     __v?: number;
     friendNumber?: string;
     friendName?: string;
-    friendMassages?: string[];
+    friendMassages?: object[];
   };
-  number: string | undefined;
+  number: string | null;
+  index: number;
+  chatIndex: number | undefined;
 };
 //*=============== chat time prop
 type ChatTimeProps = {
@@ -36,25 +38,34 @@ type ChatData = {
   date: string;
   time: string;
 };
+
+type Massage = {
+  type: string;
+  from: string;
+  massage: string;
+  date: string;
+  time: string;
+  url?: string;
+};
 function ChatMessage(props: ChatMessageProp) {
   const color: string = "";
   const [textMassage, setTextMassage] = useState<string>("online");
   const [textMassageCount, setTextMassageCount] = useState<number>(0);
   const [lastMassageTime, setLasMassageTime] = useState<string>("");
-  const [numberInUse, setNumberInUse] = useState("");
+  const [numberInUse, setNumberInUse] = useState<string | null>("");
   const name = props.body.friendName;
   const friendNumber = props.body.friendNumber;
   useEffect(() => {
     socket.emit("join-room", userNumber);
   }, []);
+
   useEffect(() => {
-    if (props.number) {
-      numberInUseFunc();
+    if (props.number !== numberInUse) {
+      (() => {
+        setNumberInUse(props.number);
+      })();
     }
   }, [props.number]);
-  function numberInUseFunc() {
-    setNumberInUse(props.number);
-  }
   //*=============== get new massage count
   function massageCount() {
     setTextMassageCount((prevTextMassageCount) => prevTextMassageCount + 1);
@@ -106,19 +117,24 @@ function ChatMessage(props: ChatMessageProp) {
   }
   //*=============== reacive new massages
   useEffect(() => {
-    if (numberInUse) {
-      socket.on("recive-massage", (massage) => {
-        const senderNumber = massage.from;
-        if (numberInUse === senderNumber) return;
+    function upDateNewMassage(massage: Massage) {
+      const senderNumber = massage.from;
+      if (numberInUse === senderNumber)
         if (senderNumber !== friendNumber) return;
-        const senderMassage = massage.massage;
-        console.log(massage);
-        const massageData: ChatData = massage;
-        updateChatHistory(massageData, senderNumber);
-        setTextMassage(senderMassage);
-        massageCount();
-      });
+      const senderMassage = massage.massage;
+      console.log(massage);
+      const massageData: ChatData = massage;
+      updateChatHistory(massageData, senderNumber);
+      setTextMassage(senderMassage);
+      massageCount();
     }
+    if (numberInUse) {
+      socket.on("recive-massage", upDateNewMassage);
+    }
+    return () => {
+      socket.off("recive-massage", upDateNewMassage);
+      console.log("off recive-massage number-" + numberInUse);
+    };
   }, [numberInUse]);
   //*=============== update online status to last chat once on each render
   useEffect(() => {
@@ -175,7 +191,11 @@ function ChatMessage(props: ChatMessageProp) {
         </span>
       </span>
       <span className="mr-1.5">
-        <ChatTime body={chatTimeProps} />
+        <ChatTime
+          body={chatTimeProps}
+          index={props.index}
+          chatIndex={props.chatIndex}
+        />
       </span>
     </>
   );

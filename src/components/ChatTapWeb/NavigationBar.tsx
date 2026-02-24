@@ -1,7 +1,13 @@
 import ChatFriends from "./ChatFriends";
 //import ChatContactDiplay from "./ChatContactDisplay";
-import { useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 function NavigationBar(props) {
+  const chatBox = useRef(null);
+  const chatText = useRef(null);
+  const groupsBox = useRef(null);
+  const groupsText = useRef(null);
+  const contactBox = useRef(null);
+  const contactText = useRef(null);
   useEffect(() => {
     async function findFriends() {
       const ECHO_Number = "Echo_Number";
@@ -34,81 +40,80 @@ function NavigationBar(props) {
   }, []);
 
   function chat() {
-    //*=============== navigation bar ui dom refrence
-    const chatBox = document.querySelector(".chat-box");
-    const chatText = document.querySelector(".chat-text");
-    const groupsBox = document.querySelector(".groups-box");
-    const groupsText = document.querySelector(".groups-text");
-    const contactBox = document.querySelector(".contact-box");
-    const contactText = document.querySelector(".contact-text");
     //*=============== update navigation bar ui
-    groupsBox.style.backgroundColor = "transparent";
-    groupsText.style.color = "black";
-    contactBox.style.backgroundColor = "transparent";
-    contactText.style.color = "black";
+    if (groupsBox.current)
+      groupsBox.current.style.backgroundColor = "transparent";
+
+    if (groupsText.current) groupsText.current.style.color = "black";
+    if (contactBox.current)
+      contactBox.current.style.backgroundColor = "transparent";
+
+    if (contactText.current) contactText.current.style.color = "black";
     //*=============== main ui change
-    chatBox.style.backgroundColor = "#2563eb";
-    chatText.style.color = "white";
+    if (chatBox.current) chatBox.current.style.backgroundColor = "#2563eb";
+
+    if (chatText.current) chatText.current.style.color = "white";
   }
   function groups() {
-    //*=============== navigation bar ui dom refrence
-    const chatBox = document.querySelector(".chat-box");
-    const chatText = document.querySelector(".chat-text");
-    const groupsBox = document.querySelector(".groups-box");
-    const groupsText = document.querySelector(".groups-text");
-    const contactBox = document.querySelector(".contact-box");
-    const contactText = document.querySelector(".contact-text");
     //*=============== update navigation bar ui
-    chatBox.style.backgroundColor = "transparent";
-    chatText.style.color = "black";
-    contactBox.style.backgroundColor = "transparent";
-    contactText.style.color = "black";
+    if (chatBox.current) chatBox.current.style.backgroundColor = "transparent";
+    if (chatText.current) chatText.current.style.color = "black";
+    if (contactBox.current)
+      contactBox.current.style.backgroundColor = "transparent";
+    if (contactText.current) contactText.current.style.color = "black";
     //*=============== main ui change
-    groupsBox.style.backgroundColor = "#2563eb";
-    groupsText.style.color = "white";
+    if (groupsBox.current) groupsBox.current.style.backgroundColor = "#2563eb";
+    if (groupsText.current) groupsText.current.style.color = "white";
   }
   function contacts() {
-    //*=============== navigation bar ui dom refrence
-    const chatBox = document.querySelector(".chat-box");
-    const chatText = document.querySelector(".chat-text");
-    const groupsBox = document.querySelector(".groups-box");
-    const groupsText = document.querySelector(".groups-text");
-    const contactBox = document.querySelector(".contact-box");
-    const contactText = document.querySelector(".contact-text");
     //*=============== update navigation bar ui
-    chatBox.style.backgroundColor = "transparent";
-    chatText.style.color = "black";
-    groupsBox.style.backgroundColor = "transparent";
-    groupsText.style.color = "black";
+    if (chatBox.current) chatBox.current.style.backgroundColor = "transparent";
+    if (chatText.current) chatText.current.style.color = "black";
+    if (groupsBox.current)
+      groupsBox.current.style.backgroundColor = "transparent";
+    if (groupsText.current) groupsText.current.style.color = "black";
     //*=============== main ui change
-    contactBox.style.backgroundColor = "#2563eb";
-    contactText.style.color = "white";
+    if (contactBox.current)
+      contactBox.current.style.backgroundColor = "#2563eb";
+    if (contactText.current) contactText.current.style.color = "white";
   }
   return (
     <>
       <div className="mt-6 mb-6">
         <div className="ml-5 flex bg-gray-200 mr-5 rounded-full">
           <span
-            className="chat-box w-[40%] bg-[#2563eb] rounded-full text-center pl-2 pr-2 pt-1.5 pb-1.5"
+            className=" w-[40%] bg-[#2563eb] rounded-full text-center pl-2 pr-2 pt-1.5 pb-1.5"
             onClick={chat}
+            ref={chatBox}
           >
-            <h5 className="chat-text m-0 text-[16px] text-white font-[Inter] text-center">
+            <h5
+              className="m-0 text-[16px] text-white font-[Inter] text-center"
+              ref={chatText}
+            >
               All Chats
             </h5>
           </span>
           <span
-            className="groups-box w-[40%] rounded-full text-center pl-2 pr-2 pt-1.5 pb-1.5"
+            className="w-[40%] rounded-full text-center pl-2 pr-2 pt-1.5 pb-1.5"
             onClick={groups}
+            ref={groupsBox}
           >
-            <h5 className="groups-text m-0 text-[16px] text-black font-[Inter] text-center">
+            <h5
+              className=" m-0 text-[16px] text-black font-[Inter] text-center"
+              ref={groupsText}
+            >
               Groups
             </h5>
           </span>
           <span
-            className="contact-box w-[40%] rounded-full text-center pl-2 pr-2 pt-1.5 pb-1.5"
+            className=" w-[40%] rounded-full text-center pl-2 pr-2 pt-1.5 pb-1.5"
             onClick={contacts}
+            ref={contactBox}
           >
-            <h5 className="contact-text m-0 text-[16px] text-black font-[Inter] text-center">
+            <h5
+              className="m-0 text-[16px] text-black font-[Inter] text-center"
+              ref={contactText}
+            >
               Contacts
             </h5>
           </span>

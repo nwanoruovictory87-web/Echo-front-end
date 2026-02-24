@@ -52,7 +52,7 @@ function MassageBackgroundUi(props) {
 
   //*=============== get chat history on render once and clean up
   useEffect(() => {
-    console.log(props.body, "props change");
+    // console.log(props.body, "props change");
     const friendData = props.body;
     const handelIncomingMassage = (data) => {
       const from = data.from;
