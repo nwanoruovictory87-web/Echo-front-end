@@ -1,11 +1,16 @@
+import { userAppContext } from "../AppContext/AppContext";
+import { useNavigate } from "react-router-dom";
 function SingUpNumber() {
-  const ECHO = "Echo_Number";
-  const echoNumber = JSON.parse(localStorage.getItem(ECHO)) || null;
-  const userNumber = echoNumber && echoNumber.number;
+  const userDetails = userAppContext();
+  const { userData } = userDetails;
+  const urlNavigator = useNavigate();
+  console.log(userDetails);
+  const echoNumber = userData && userData.userLoginData.number;
+  const userNumber = echoNumber ? echoNumber : null;
   console.log(userNumber);
   function chat() {
     const url = "/chat";
-    window.location.assign(url);
+    urlNavigator(url, { replace: true });
   }
   return (
     <div className="w-full h-screen">

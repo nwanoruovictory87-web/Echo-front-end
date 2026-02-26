@@ -1,13 +1,15 @@
 //*=============== echo types
 type EchoNumber = {
-  number?: string;
+  number?: string | null;
 };
-type ChatType = object[];
+type ChatType = [ChatData];
 type ChatData = {
-  type: string;
-  from?: string;
+  date: string;
+  from: string;
   massage: string;
-  url: string;
+  time: string;
+  type: string;
+  url?: string | undefined;
 };
 
 //*=============== get user number
@@ -31,6 +33,9 @@ function MassageText(props: { body: ChatType }) {
                 <h5 className="text-[#242222c5] text-xl font-[Inter] break-words">
                   {e.massage}
                 </h5>
+                <h5 className="text-[#242222c5] text-sm font-[Inter] pt-2 mb-[-5px]">
+                  {e.time}
+                </h5>
               </span>
             );
           } else if (e.type === "image") {
@@ -45,6 +50,9 @@ function MassageText(props: { body: ChatType }) {
                     className="w-[300px] h-38 rounded-xl"
                     alt="image"
                   ></img>
+                  <h5 className="text-[#f9f9f9] text-sm font-[Inter] pt-1.5 pl-1.5">
+                    {e.time}
+                  </h5>
                 </span>
               );
             } else if (e.from !== userNumber) {
@@ -58,6 +66,9 @@ function MassageText(props: { body: ChatType }) {
                     className="w-[300px] h-38 rounded-xl"
                     alt="image"
                   ></img>
+                  <h5 className="text-[#242222c5] text-sm font-[Inter] pt-1.5 pl-1.5">
+                    {e.time}
+                  </h5>
                 </span>
               );
             }
@@ -74,13 +85,19 @@ function MassageText(props: { body: ChatType }) {
                       className="w-[300px] h-38 rounded-xl"
                       alt="image"
                     ></img>
+                    <h5 className="text-[#f9f9f9] text-sm font-[Inter] pt-1.5 pl-1.5">
+                      {e.time}
+                    </h5>
                   </span>
                   <span
                     className="ml-auto block w-fit max-w-[300px] h-fit bg-blue-500 p-[12px] pl-[15px] pr-[15px] rounded-br-[30px] rounded-s-3xl overflow-hidden text-box-left"
-                    key={i + 1}
+                    key={i + 0.5}
                   >
                     <h5 className="text-[#f9f9f9] text-xl font-[Inter] break-words">
                       {e.massage}
+                    </h5>
+                    <h5 className="text-[#f9f9f9] text-sm font-[Inter] pt-2 mb-[-5px]">
+                      {e.time}
                     </h5>
                   </span>
                 </>
@@ -97,13 +114,19 @@ function MassageText(props: { body: ChatType }) {
                       className="w-[300px] h-38 rounded-xl"
                       alt="image"
                     ></img>
+                    <h5 className="text-[#242222c5] text-sm font-[Inter] pt-1.5 pl-1.5">
+                      {e.time}
+                    </h5>
                   </span>
                   <span
                     className="block w-fit max-w-[300px] h-fit bg-[#f1f1f1] p-[12px] pl-[15px] pr-[15px] rounded-bl-[30px] rounded-e-3xl overflow-hidden text-box-right"
-                    key={i + 1}
+                    key={i + 0.5}
                   >
-                    <h5 className="text-[#888] text-xl font-[Inter] break-words">
+                    <h5 className="text-[#242222c5] text-xl font-[Inter] break-words">
                       {e.massage}
+                    </h5>
+                    <h5 className="text-[#242222c5] text-sm font-[Inter] pt-2 mb-[-5px]">
+                      {e.time}
                     </h5>
                   </span>
                 </>
@@ -118,6 +141,9 @@ function MassageText(props: { body: ChatType }) {
                 >
                   <h5 className="text-[#f9f9f9] text-xl font-[Inter] break-words">
                     {e.massage}
+                  </h5>
+                  <h5 className="text-[#f9f9f9] text-sm font-[Inter] pt-2 mb-[-5px]">
+                    {e.time}
                   </h5>
                 </span>
               );

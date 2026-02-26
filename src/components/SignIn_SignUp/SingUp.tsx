@@ -1,8 +1,25 @@
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { userAppContext } from "../AppContext/AppContext";
+//*=============== type
+type UserloginData = {
+  number: string;
+  authorization: string;
+  userName: string;
+  userImage: string;
+};
+type UserData = {
+  userLoginData: UserloginData;
+  userMassageNotificationTon?: string;
+  userCallRingintone?: string;
+};
 function SignUp() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const userDetails = userAppContext();
+  const { userData, setUserData } = userDetails;
+  const urlNavigator = useNavigate();
+  console.log(userDetails);
   function signUpNumber() {
     const firstNBackground = document.querySelector(
       ".user-name",
@@ -31,7 +48,7 @@ function SignUp() {
   }
   //*=============== register user
   async function register() {
-    const userData = {
+    const userDataSingUp = {
       username: username,
       password: password,
     };
@@ -42,17 +59,26 @@ function SignUp() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify(userDataSingUp),
       });
       const res = await data.json();
-      const ECHO = "Echo_Number";
+      //const ECHO = "Echo_Number";
       if (res.status !== 201) return;
-      const userNumber = {
+      const userLoginData: UserloginData = {
         number: res.number,
+        authorization: res.authorization,
+        userName: userDataSingUp.username,
+        userImage: "",
       };
-      localStorage.setItem(ECHO, JSON.stringify(userNumber));
+      const userDataRes = {
+        userLoginData: userLoginData,
+      };
+      //console.log(userDataRes);
+      setUserData((prevUserData: UserData) => (prevUserData = userDataRes));
+      //console.log(userData);
+      //
       const clientUrl = "/sign/up/number";
-      window.location.replace(clientUrl);
+      urlNavigator(clientUrl, { replace: true });
     } catch (error) {
       console.log(error);
     }
@@ -67,7 +93,7 @@ function SignUp() {
   }
   function login() {
     const url = "/login";
-    window.location.replace(url);
+    urlNavigator(url, { replace: true });
   }
   return (
     <div className="w-full h-screen">

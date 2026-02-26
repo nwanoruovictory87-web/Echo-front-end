@@ -1,9 +1,27 @@
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { userAppContext } from "../AppContext/AppContext";
+//*=============== type
+type UserloginData = {
+  number: string;
+  authorization: string;
+  userName: string;
+  userImage: string;
+};
+type UserData = {
+  userLoginData: UserloginData;
+  userMassageNotificationTon: string | null;
+  userCallRingintone: string | null;
+};
 function Login() {
   const [phoneInput, setPhoneInput] = useState<string>("");
   const [passwordInput, setPasswordInput] = useState<string>("");
   const [phoneCanculeInput, setPhoneCanculeInput] = useState<number>(0);
+  const userDetails = userAppContext();
+  const { userData, setUserData } = userDetails;
+  const urlNavigator = useNavigate();
+  console.log(userData);
+  console.log(userDetails);
   //*================= store an validate phone input
   function phoneF(e) {
     const data = e.target.value;
@@ -95,21 +113,27 @@ function Login() {
           (loginErrorUi.style.color = "red")
         );
       loginErrorUi.textContent = "";
-      const userData = {
+      const userLoginData: UserloginData = {
         number: responds.number,
         authorization: responds.authorization,
+        userName: responds.userName,
+        userImage: "",
       };
-      const ECHO_Number = "Echo_Number";
-      localStorage.setItem(ECHO_Number, JSON.stringify(userData));
+      const userData = {
+        userLoginData: userLoginData,
+        userMassageNotificationTon: null,
+        userCallRingintone: null,
+      };
+      setUserData((prevUserData: UserData) => (prevUserData = userData));
       const url = "/chat";
-      window.location.replace(url);
+      urlNavigator(url, { replace: true });
     } catch (error) {
       console.log(error);
     }
   }
   function signUp() {
     const url = "/sign/up";
-    window.location.replace(url);
+    urlNavigator(url, { replace: true });
   }
 
   return (

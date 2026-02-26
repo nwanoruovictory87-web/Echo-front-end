@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 import { useState, useEffect } from "react";
 import ChatTime from "./ChatTime";
+import defultMassageSound from "../../assets/defult-massage-sound/Messenger-Notification-Sound.mp3";
 //*================== connnect io to server
 //! remove io server host url to real host
 const socket = io("http://localhost:5000");
@@ -48,6 +49,14 @@ function ChatMessage(props: ChatMessageProp) {
   //*=============== get new massage count
   function massageCount() {
     setTextMassageCount((prevTextMassageCount) => prevTextMassageCount + 1);
+  }
+  //*=============== massage defult sound notification
+  async function defultMassageNotification() {
+    try {
+      await new Audio(defultMassageSound).play();
+    } catch (error) {
+      console.log(error);
+    }
   }
   //*=============== get old chat and update chat history
   function updateChatHistory(m: ChatData, n: string) {
@@ -97,16 +106,21 @@ function ChatMessage(props: ChatMessageProp) {
 
   //*=============== reacive new massages
   useEffect(() => {
-    socket.on("recive-massage", (massage) => {
+    const reciveMassage = (massage) => {
       const senderNumber = massage.from;
       if (senderNumber !== friendNumber) return;
       const senderMassage = massage.massage;
-      console.log(massage);
+      //console.log(massage);
       const massageData: ChatData = massage;
       updateChatHistory(massageData, senderNumber);
       setTextMassage(senderMassage);
       massageCount();
-    });
+      defultMassageNotification();
+    };
+    socket.on("recive-massage", reciveMassage);
+    return () => {
+      socket.off("recive-massage", reciveMassage);
+    };
   }, []);
   //*=============== update online status to last chat once on each render
   useEffect(() => {

@@ -46,6 +46,7 @@ function ChatFriends(props) {
   const [chatIndex, setChatIndex] = useState<number>(0);
   //*=============== load to massage box
   function massage(e: EchoFriend, i: number): void {
+    if (!e) return;
     props.body.ref.current = e;
     props.body.setData();
     setNumberInUse(e.friendNumber);

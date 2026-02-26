@@ -1,16 +1,53 @@
 import ChatFriends from "./ChatFriends";
 //import ChatContactDiplay from "./ChatContactDisplay";
 import { useState, useEffect } from "react";
+import { userAppContext } from "../AppContext/AppContext";
+//*=============== object type
+type FriendListOfArrayObject = {
+  _id?: string;
+  __v?: number;
+  friendNumber?: string;
+  friendName?: string;
+  friendMassages?: object[];
+};
+type UserloginData = {
+  number: string;
+  authorization: string;
+  userName: string;
+  userImage: string;
+};
+type UserData = {
+  userLoginData: UserloginData;
+  userMassageNotificationTon: string;
+  userCallRingintone: string;
+};
+type UserDetails = {
+  friendChat: object[] | undefined;
+  setFriendChat: void;
+  setUserData: void;
+  setUserFriendList: void;
+  userData: UserData;
+  userFriendList: FriendListOfArrayObject[];
+};
 function NavigationBar() {
+  const userDetails: UserDetails | null = userAppContext();
+  const {
+    userData,
+    setUserData,
+    friendChat,
+    setFriendChat,
+    userFriendList,
+    setUserFriendList,
+  } = userDetails;
   useEffect(() => {
     async function findFriends() {
-      const ECHO_Number = "Echo_Number";
-      const userData = JSON.parse(localStorage.getItem(ECHO_Number));
-      const authorization = userData.authorization;
-      const userNumber = userData.number;
+      const userInfor: UserloginData = userData.userLoginData
+        ? userData.userLoginData
+        : null;
+      if (!userInfor) return;
       const data = {
-        userNumber: userNumber,
-        authorization: authorization,
+        userNumber: userInfor.number,
+        authorization: userInfor.authorization,
       };
       try {
         const serverUrl = "http://localhost:5000/user/g/u/friends";
@@ -23,9 +60,12 @@ function NavigationBar() {
         });
         const responods = await findFriendsList.json();
         if (responods.status !== 200) return;
-        const friendsData = responods.friends;
-        const Echo_FriendsList = "Echo_FriendsList";
-        localStorage.setItem(Echo_FriendsList, JSON.stringify(friendsData));
+        const friendsData: FriendListOfArrayObject[] = responods.friends;
+        console.log(friendsData);
+        setUserFriendList(
+          (prevFriendList: FriendListOfArrayObject[]) =>
+            (prevFriendList = friendsData),
+        );
       } catch (error) {
         console.log(error);
       }

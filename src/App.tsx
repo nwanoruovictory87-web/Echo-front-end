@@ -13,6 +13,7 @@ import SingUpNumber from "./components/SignIn_SignUp/SingUpNumber";
 import ChatTapWeb from "./components/ChatTapWeb/ChatTap";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+//*=============== object type
 function App() {
   useEffect(() => {
     const head = document.querySelector("head");
@@ -25,15 +26,42 @@ function App() {
   //
   const router = createBrowserRouter([
     { path: "/", element: <Welcome /> },
-    { path: "/login", element: <Login /> },
-    { path: "/sign/up", element: <SignUp /> },
-    { path: "/sign/up/number", element: <SingUpNumber /> },
-    { path: "/chat", element: <ChatTap /> },
-    { path: "/chat/web", element: <ChatTapWeb /> },
-    { path: "/chat/add/contact", element: <ChatAddContact /> },
-    { path: "/massage", element: <MassageTap /> },
-    { path: "/video/call", element: <VideoCall /> },
-    { path: "/audio/call", element: <AudioCall /> },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/sign/up",
+      element: <SignUp />,
+    },
+    {
+      path: "/sign/up/number",
+      element: <SingUpNumber />,
+    },
+    {
+      path: "/chat",
+      element: <ChatTap />,
+    },
+    {
+      path: "/chat/web",
+      element: <ChatTapWeb />,
+    },
+    {
+      path: "/chat/add/contact",
+      element: <ChatAddContact />,
+    },
+    {
+      path: "/massage",
+      element: <MassageTap />,
+    },
+    {
+      path: "/video/call",
+      element: <VideoCall />,
+    },
+    {
+      path: "/audio/call",
+      element: <AudioCall />,
+    },
   ]);
   return (
     <>

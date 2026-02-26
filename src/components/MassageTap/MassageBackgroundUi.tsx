@@ -3,10 +3,12 @@ import MassageBackButton from "./MassageBackButton";
 import MassageText from "./MassageText";
 import { io } from "socket.io-client";
 import { useState, useEffect } from "react";
+import { Emoji } from "emoji-mart";
+import { Picker } from "emoji-mart";
 
 //*=============== echo types
 type EchoNumber = {
-  number?: string;
+  number?: string | undefined;
 };
 
 type ChatData = {
@@ -26,6 +28,14 @@ type EchoFriend = {
   friendMassages?: string[];
 };
 */
+type Massage = {
+  date: string;
+  from: string;
+  massage: string;
+  time: string;
+  type: string;
+  url?: string | undefined;
+};
 //*=============== connect socket once on render
 const socket = io("http://localhost:5000");
 
@@ -69,19 +79,27 @@ function MassageBackgroundUi() {
 
   function updateLocalChatStorage() {}
   //*=============== get new text masssage
-  socket.on("recive-massage", (data) => {
-    const from = data.from;
-    if (from !== friendValue.friendNumber) return;
-    const storedChat: object[] = [...chat, data];
-    //*================= update chat
-    setChat((c) => (c = storedChat));
-    updateLocalChatStorage();
-    //*=============== move new massage to top after 300ms
-    setTimeout(() => {
-      const chatEndScroll = document.querySelector(".chat-end");
-      chatEndScroll?.scrollIntoView({ behavior: "smooth", block: "end" });
-    }, 300);
-  });
+  useEffect(() => {
+    const reciveMassage = (massage: Massage) => {
+      const from = massage.from;
+      if (from !== friendValue.friendNumber) return;
+      //*================= update chat
+      setChat((prevChat) => {
+        if (prevChat.length !== 0) return [...prevChat, massage];
+        return [massage];
+      });
+      updateLocalChatStorage();
+      //*=============== move new massage to top after 300ms
+      setTimeout(() => {
+        const chatEndScroll = document.querySelector(".chat-end");
+        chatEndScroll?.scrollIntoView({ behavior: "smooth", block: "end" });
+      }, 300);
+    };
+    socket.on("recive-massage", reciveMassage);
+    return () => {
+      socket.off("recive-massage", reciveMassage);
+    };
+  }, []);
   //*================= update input onchange
   function storeInput(e): void {
     setInput(e.target.value);
@@ -154,7 +172,6 @@ function MassageBackgroundUi() {
       date: `${day}/${month}/${year}`,
       time: `${hour}:${minite}${amOrPm}`,
     };
-    console.log(data);
     setInput("");
     //*=============== update chat
     //*=============== send text massage

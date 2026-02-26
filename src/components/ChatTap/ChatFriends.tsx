@@ -1,17 +1,10 @@
 import ChatMessage from "./ChatMessage";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { userAppContext } from "../AppContext/AppContext";
+import { useNavigate } from "react-router-dom";
 
 //*=============== type firendlist
-type FriendListOfArrayObject = [
-  {
-    _id?: string;
-    __v?: number;
-    friendNumber?: string;
-    friendName?: string;
-    friendMassages?: string[];
-  },
-];
 type EchoNumber = {
   number?: string;
 };
@@ -20,7 +13,43 @@ type EchoFriend = {
   __v?: number;
   friendNumber?: string;
   friendName?: string;
-  friendMassages?: string[];
+  friendMassages?: object[];
+};
+type Massage = {
+  date: string;
+  from: string;
+  massage: string;
+  time: string;
+  type: string;
+  url?: string | undefined;
+};
+type FriendListOfArrayObject = [
+  {
+    _id?: string;
+    __v?: number;
+    friendNumber?: string;
+    friendName?: string;
+    friendMassages?: object[];
+  },
+];
+type UserloginData = {
+  number: string;
+  authorization: string;
+  userName: string;
+  userImage: string;
+};
+type UserData = {
+  userLoginData: UserloginData;
+  userMassageNotificationTon: string;
+  userCallRingintone: string;
+};
+type UserDetails = {
+  friendChat: object[] | undefined;
+  setFriendChat: void;
+  setUserData: void;
+  setUserFriendList: void;
+  userData: UserData;
+  userFriendList: FriendListOfArrayObject;
 };
 //*=============== connnect io to server
 //! remove io server host url to real host
@@ -32,61 +61,65 @@ const userNumber = userValue ? userValue.number : null;
 
 //
 function ChatFriends() {
+  const userDetails: UserDetails | null = userAppContext();
+  const { userData, userFriendList, setFriendChat } = userDetails;
+  console.log(userData);
   //*=============== get friends list
-  const [friendList, setFriendList] = useState<FriendListOfArrayObject>([]);
+  const [friendList, setFriendList] =
+    useState<FriendListOfArrayObject[]>(userFriendList);
+  const userNumber = userData ? userData.userLoginData.number : null;
+  const urlNavigator = useNavigate();
   //*=============== load to massage box
   function massage(e: EchoFriend): void {
-    const ECHO_Friend = "Friend_Chat";
-    localStorage.setItem(ECHO_Friend, JSON.stringify(e));
+    setFriendChat(e);
     const url = "/massage";
-    window.location.replace(url);
+    urlNavigator(url, { replace: true });
   }
   //*=============== func to store freind list
-  function updateFriendList(e: FriendListOfArrayObject): void {
-    setFriendList(e);
-  }
   useEffect(() => {
-    const Echo_FriendsList = "Echo_FriendsList";
-    const stordFriendList: FriendListOfArrayObject = JSON.parse(
-      localStorage.getItem(Echo_FriendsList),
-    );
-    if (stordFriendList) {
+    if (userFriendList) {
       (() => {
         //*=============== call a function to store friends list
-        updateFriendList(stordFriendList);
+        setFriendList(userFriendList);
       })();
     }
-  }, []);
+  }, [userFriendList]);
   //
   useEffect(() => {
     socket.emit("join-room", userNumber);
   }, []);
   //*=============== get new massage by non saved contact || get new friends massage
   //*=============== reacive new massages
-  socket.on("recive-massage", (massage) => {
-    const senderNumber = massage.from;
-    const massageData = massage;
-    for (let i = 0; i < friendList.length; i++) {
-      const friendsNumber = friendList[i]?.friendNumber;
-      if (friendsNumber === senderNumber) return;
-      if (i + 1 === friendList.length) {
-        const Echo_FriendsList = "Echo_FriendsList";
-        const storedFriendList = JSON.parse(
-          localStorage.getItem(Echo_FriendsList),
-        );
-        //*=============== send new contact massage
-        const friendData: EchoFriend = {
-          friendMassages: [massageData],
-          friendName: senderNumber,
-          friendNumber: senderNumber,
-        };
-        const newFriendList = storedFriendList
-          ? [...storedFriendList, friendData]
-          : [friendData];
-        updateFriendList(newFriendList);
+  useEffect(() => {
+    const reciveMassage = (massage: Massage) => {
+      const senderNumber = massage.from;
+      const massageData = massage;
+      for (let i = 0; i < friendList.length; i++) {
+        const friendsNumber = friendList[i]?.friendNumber;
+        if (friendsNumber === senderNumber) return;
+        if (i + 1 === friendList.length) {
+          const Echo_FriendsList = "Echo_FriendsList";
+          const storedFriendList = JSON.parse(
+            localStorage.getItem(Echo_FriendsList),
+          );
+          //*=============== send new contact massage
+          const friendData: EchoFriend = {
+            friendMassages: [massageData],
+            friendName: senderNumber,
+            friendNumber: senderNumber,
+          };
+          const newFriendList = storedFriendList
+            ? [...storedFriendList, friendData]
+            : [friendData];
+          updateFriendList(newFriendList);
+        }
       }
-    }
-  });
+    };
+    socket.on("recive-massage", reciveMassage);
+    return () => {
+      socket.off("recive-massage", reciveMassage);
+    };
+  }, []);
 
   return (
     <div>
