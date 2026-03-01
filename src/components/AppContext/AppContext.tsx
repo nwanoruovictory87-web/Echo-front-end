@@ -1,5 +1,20 @@
 import { createContext, useState, useContext } from "react";
 //*=============== object type
+type ChatData = {
+  date: string;
+  from: string;
+  massage: string;
+  time: string;
+  type: string;
+  url?: string | undefined;
+};
+type EchoFriend = {
+  _id?: string;
+  __v?: number;
+  friendNumber?: string;
+  friendName?: string;
+  friendMassages?: ChatData[];
+};
 type FriendListOfArrayObject = {
   _id?: string;
   __v?: number;
@@ -19,7 +34,7 @@ type UserData = {
   userCallRingintone: string;
 };
 type UserDetails = {
-  friendChat: object[] | undefined;
+  friendChat: EchoFriend | undefined;
   setFriendChat: void;
   setUserData: void;
   setUserFriendList: void;
@@ -32,7 +47,7 @@ export const UserDataProvider = ({ children }) => {
   const [userFriendList, setUserFriendList] = useState<
     FriendListOfArrayObject[]
   >([]);
-  const [friendChat, setFriendChat] = useState();
+  const [friendChat, setFriendChat] = useState<EchoFriend[]>();
   const [userData, setUserData] = useState<UserData>();
   //
   return (

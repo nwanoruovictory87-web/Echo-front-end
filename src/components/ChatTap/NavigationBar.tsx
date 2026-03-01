@@ -1,6 +1,6 @@
 import ChatFriends from "./ChatFriends";
 //import ChatContactDiplay from "./ChatContactDisplay";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { userAppContext } from "../AppContext/AppContext";
 //*=============== object type
 type FriendListOfArrayObject = {
@@ -30,7 +30,13 @@ type UserDetails = {
   userFriendList: FriendListOfArrayObject[];
 };
 function NavigationBar() {
-  const userDetails: UserDetails | null = userAppContext();
+  const userDetails: UserDetails = userAppContext();
+  const chatBox = useRef(null);
+  const chatText = useRef(null);
+  const groupsBox = useRef(null);
+  const groupsText = useRef(null);
+  const contactBox = useRef(null);
+  const contactText = useRef(null);
   const {
     userData,
     setUserData,
@@ -39,11 +45,21 @@ function NavigationBar() {
     userFriendList,
     setUserFriendList,
   } = userDetails;
+  function updateUserFriendlist(
+    friendsData: FriendListOfArrayObject[],
+    setUserFriendList,
+  ) {
+    setUserFriendList(
+      (prevFriendList: FriendListOfArrayObject[]) =>
+        (prevFriendList = friendsData),
+    );
+    console.log("enter setFriendlist");
+    const USER_FRIENDLIST = "User_FriendList";
+    localStorage.setItem(USER_FRIENDLIST, JSON.stringify(friendsData));
+  }
   useEffect(() => {
     async function findFriends() {
-      const userInfor: UserloginData = userData.userLoginData
-        ? userData.userLoginData
-        : null;
+      const userInfor: UserloginData = userData ? userData.userLoginData : null;
       if (!userInfor) return;
       const data = {
         userNumber: userInfor.number,
@@ -62,10 +78,7 @@ function NavigationBar() {
         if (responods.status !== 200) return;
         const friendsData: FriendListOfArrayObject[] = responods.friends;
         console.log(friendsData);
-        setUserFriendList(
-          (prevFriendList: FriendListOfArrayObject[]) =>
-            (prevFriendList = friendsData),
-        );
+        updateUserFriendlist(friendsData, setUserFriendList);
       } catch (error) {
         console.log(error);
       }
@@ -75,54 +88,36 @@ function NavigationBar() {
 
   function chat() {
     //*=============== navigation bar ui dom refrence
-    const chatBox = document.querySelector(".chat-box");
-    const chatText = document.querySelector(".chat-text");
-    const groupsBox = document.querySelector(".groups-box");
-    const groupsText = document.querySelector(".groups-text");
-    const contactBox = document.querySelector(".contact-box");
-    const contactText = document.querySelector(".contact-text");
     //*=============== update navigation bar ui
-    groupsBox.style.backgroundColor = "transparent";
-    groupsText.style.color = "black";
-    contactBox.style.backgroundColor = "transparent";
-    contactText.style.color = "black";
+    groupsBox.current.style.backgroundColor = "transparent";
+    groupsText.current.style.color = "black";
+    contactBox.current.style.backgroundColor = "transparent";
+    contactText.current.style.color = "black";
     //*=============== main ui change
-    chatBox.style.backgroundColor = "#2563eb";
-    chatText.style.color = "white";
+    chatBox.current.style.backgroundColor = "#2563eb";
+    chatText.current.style.color = "white";
   }
   function groups() {
     //*=============== navigation bar ui dom refrence
-    const chatBox = document.querySelector(".chat-box");
-    const chatText = document.querySelector(".chat-text");
-    const groupsBox = document.querySelector(".groups-box");
-    const groupsText = document.querySelector(".groups-text");
-    const contactBox = document.querySelector(".contact-box");
-    const contactText = document.querySelector(".contact-text");
     //*=============== update navigation bar ui
-    chatBox.style.backgroundColor = "transparent";
-    chatText.style.color = "black";
-    contactBox.style.backgroundColor = "transparent";
-    contactText.style.color = "black";
+    chatBox.current.style.backgroundColor = "transparent";
+    chatText.current.style.color = "black";
+    contactBox.current.style.backgroundColor = "transparent";
+    contactText.current.style.color = "black";
     //*=============== main ui change
-    groupsBox.style.backgroundColor = "#2563eb";
-    groupsText.style.color = "white";
+    groupsBox.current.style.backgroundColor = "#2563eb";
+    groupsText.current.style.color = "white";
   }
   function contacts() {
     //*=============== navigation bar ui dom refrence
-    const chatBox = document.querySelector(".chat-box");
-    const chatText = document.querySelector(".chat-text");
-    const groupsBox = document.querySelector(".groups-box");
-    const groupsText = document.querySelector(".groups-text");
-    const contactBox = document.querySelector(".contact-box");
-    const contactText = document.querySelector(".contact-text");
     //*=============== update navigation bar ui
-    chatBox.style.backgroundColor = "transparent";
-    chatText.style.color = "black";
-    groupsBox.style.backgroundColor = "transparent";
-    groupsText.style.color = "black";
+    chatBox.current.style.backgroundColor = "transparent";
+    chatText.current.style.color = "black";
+    groupsBox.current.style.backgroundColor = "transparent";
+    groupsText.current.style.color = "black";
     //*=============== main ui change
-    contactBox.style.backgroundColor = "#2563eb";
-    contactText.style.color = "white";
+    contactBox.current.style.backgroundColor = "#2563eb";
+    contactText.current.style.color = "white";
   }
   return (
     <>
@@ -131,24 +126,36 @@ function NavigationBar() {
           <span
             className="chat-box w-[40%] bg-[#2563eb] rounded-full text-center pl-2 pr-2 pt-1.5 pb-1.5"
             onClick={chat}
+            ref={chatBox}
           >
-            <h5 className="chat-text m-0 text-[16px] text-white font-[Inter] text-center">
+            <h5
+              className="chat-text m-0 text-[16px] text-white font-[Inter] text-center"
+              ref={chatText}
+            >
               All Chats
             </h5>
           </span>
           <span
             className="groups-box w-[40%] rounded-full text-center pl-2 pr-2 pt-1.5 pb-1.5"
             onClick={groups}
+            ref={groupsBox}
           >
-            <h5 className="groups-text m-0 text-[16px] text-black font-[Inter] text-center">
+            <h5
+              className="groups-text m-0 text-[16px] text-black font-[Inter] text-center"
+              ref={groupsText}
+            >
               Groups
             </h5>
           </span>
           <span
             className="contact-box w-[40%] rounded-full text-center pl-2 pr-2 pt-1.5 pb-1.5"
             onClick={contacts}
+            ref={contactBox}
           >
-            <h5 className="contact-text m-0 text-[16px] text-black font-[Inter] text-center">
+            <h5
+              className="contact-text m-0 text-[16px] text-black font-[Inter] text-center"
+              ref={contactText}
+            >
               Contacts
             </h5>
           </span>

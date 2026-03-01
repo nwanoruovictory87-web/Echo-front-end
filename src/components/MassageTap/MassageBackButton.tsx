@@ -1,12 +1,31 @@
-function MassageBackButton(props) {
+import { useNavigate } from "react-router-dom";
+//*=============== object type
+type ChatData = {
+  date: string;
+  from: string;
+  massage: string;
+  time: string;
+  type: string;
+  url?: string | undefined;
+};
+type EchoFriend = {
+  _id?: string;
+  __v?: number;
+  friendNumber?: string;
+  friendName?: string;
+  friendMassages?: ChatData[];
+};
+function MassageBackButton(props: { body: EchoFriend | undefined }) {
   const propsValue = props.body;
   const color: string = "text-white";
+  const urlNavigator = useNavigate();
+
   function back() {
     const url = "/chat";
-    window.location.replace(url);
+    urlNavigator(url, { replace: true });
   }
   const data = {
-    friendName: propsValue.friendName ? propsValue.friendName : "Gust",
+    friendName: propsValue ? propsValue.friendName : "Gust",
     color: color,
   };
   return (

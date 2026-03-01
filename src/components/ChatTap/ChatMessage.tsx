@@ -2,12 +2,11 @@ import { io } from "socket.io-client";
 import { useState, useEffect } from "react";
 import ChatTime from "./ChatTime";
 import defultMassageSound from "../../assets/defult-massage-sound/Messenger-Notification-Sound.mp3";
+import { userAppContext } from "../AppContext/AppContext";
+
 //*================== connnect io to server
 //! remove io server host url to real host
 const socket = io("http://localhost:5000");
-const ECHO_Number = "Echo_Number";
-const userValue = JSON.parse(localStorage.getItem(ECHO_Number));
-const userNumber = userValue ? userValue.number : null;
 //*=============== chatmassage props types
 type ChatMessageProp = {
   body: {
@@ -15,7 +14,7 @@ type ChatMessageProp = {
     __v?: number;
     friendNumber?: string;
     friendName?: string;
-    friendMassages?: string[];
+    friendMassages?: ChatData[];
   };
 };
 //*=============== chat time prop
@@ -27,7 +26,14 @@ type ChatTimeProps = {
 type EchoNumber = {
   number?: string;
 };
-
+type Massage = {
+  date: string;
+  from: string;
+  massage: string;
+  time: string;
+  type: string;
+  url?: string | undefined;
+};
 type ChatData = {
   type: string;
   from?: string;
@@ -36,15 +42,76 @@ type ChatData = {
   date: string;
   time: string;
 };
+type FriendListOfArrayObject = {
+  userId: string;
+  _id?: string;
+  __v?: number;
+  friendNumber?: string;
+  friendName?: string;
+  friendMassages?: ChatData[];
+};
+type UserloginData = {
+  number: string;
+  authorization: string;
+  userName: string;
+  userImage: string;
+};
+type UserData = {
+  userLoginData: UserloginData;
+  userMassageNotificationTon: string;
+  userCallRingintone: string;
+};
+type UserDetails = {
+  friendChat: object[] | undefined;
+  setFriendChat: void;
+  setUserData: void;
+  setUserFriendList: void;
+  userData: UserData;
+  userFriendList: FriendListOfArrayObject[];
+};
+type Typing = {
+  typing: boolean;
+  from: string;
+};
 function ChatMessage(props: ChatMessageProp) {
   const color: string = "";
   const [textMassage, setTextMassage] = useState<string>("online");
   const [textMassageCount, setTextMassageCount] = useState<number>(0);
   const [lastMassageTime, setLasMassageTime] = useState<string>("");
+  const [typingState, setTypingState] = useState(false);
+  const userDetails: UserDetails = userAppContext();
+  const { userData, userFriendList, setUserFriendList } = userDetails;
+  const userNumber = userData.userLoginData.number;
   const name = props.body.friendName;
   const friendNumber = props.body.friendNumber;
   useEffect(() => {
     socket.emit("join-room", userNumber);
+  }, []);
+  useEffect(() => {
+    if (typingState) {
+      setTimeout(() => {
+        setTypingState((prevtypingState: boolean) => (prevtypingState = false));
+      }, 7000);
+    }
+  }, [typingState]);
+  //*=============== recive typing data
+  useEffect(() => {
+    const reciveTypingData = (data: Typing) => {
+      const isTyping: boolean = data.typing;
+      const from: string = data.from;
+      if (from !== friendNumber) return;
+      if (isTyping) {
+        if (!typingState) {
+          setTypingState(
+            (prevtypingState: boolean) => (prevtypingState = true),
+          );
+        }
+      }
+    };
+    socket.on("is-typing", reciveTypingData);
+    return () => {
+      socket.off("is-typing", reciveTypingData);
+    };
   }, []);
   //*=============== get new massage count
   function massageCount() {
@@ -59,12 +126,23 @@ function ChatMessage(props: ChatMessageProp) {
     }
   }
   //*=============== get old chat and update chat history
+  function updateFriendList(
+    newFriendList: FriendListOfArrayObject[],
+    setUserFriendList,
+  ) {
+    setUserFriendList(
+      (prevFriendList: FriendListOfArrayObject[]) =>
+        (prevFriendList = newFriendList),
+    );
+    const USER_FRIENDLIST = "User_FriendList";
+    localStorage.setItem(USER_FRIENDLIST, JSON.stringify(newFriendList));
+  }
+  //*=============== get old chat and update chat history
   function updateChatHistory(m: ChatData, n: string) {
     const senderNumber = n;
     const massageData = m;
     //*=============== get old massage and update to new one
-    const Echo_FriendsList = "Echo_FriendsList";
-    const friendValue = JSON.parse(localStorage.getItem(Echo_FriendsList));
+    const friendValue = userFriendList;
     //*=============== if friends does exist
     if (friendValue) {
       //*=============== get index of friend massage in friend list & upadate friend massage
@@ -90,7 +168,7 @@ function ChatMessage(props: ChatMessageProp) {
             friendName: friendValue[chatTobeUpdatted].friendName,
             friendNumber: friendValue[chatTobeUpdatted].friendNumber,
             userId: friendValue[chatTobeUpdatted].userId,
-            __v: friendValue[chatTobeUpdatted]._v,
+            __v: friendValue[chatTobeUpdatted].__v,
             _id: friendValue[chatTobeUpdatted]._id,
           };
           friendListUpdated.push(friendData);
@@ -99,16 +177,17 @@ function ChatMessage(props: ChatMessageProp) {
         }
       }
       //*=============== update friend data
-      const Echo_FriendsList = "Echo_FriendsList";
-      localStorage.setItem(Echo_FriendsList, JSON.stringify(friendListUpdated));
+      updateFriendList(friendListUpdated, setUserFriendList);
     }
   }
 
   //*=============== reacive new massages
   useEffect(() => {
-    const reciveMassage = (massage) => {
+    const reciveMassage = (massage: Massage) => {
       const senderNumber = massage.from;
       if (senderNumber !== friendNumber) return;
+      //*=============== stop tying animation
+      setTypingState((prevtypingState: boolean) => (prevtypingState = false));
       const senderMassage = massage.massage;
       //console.log(massage);
       const massageData: ChatData = massage;
@@ -124,8 +203,8 @@ function ChatMessage(props: ChatMessageProp) {
   }, []);
   //*=============== update online status to last chat once on each render
   useEffect(() => {
-    const Echo_FriendsList = "Echo_FriendsList";
-    const friendValue = JSON.parse(localStorage.getItem(Echo_FriendsList));
+    const friendValue: FriendListOfArrayObject[] = userFriendList;
+    if (!friendValue) return;
     for (let i = 0; i < friendValue.length; i++) {
       if (friendValue[i].friendNumber === friendNumber) {
         const lastMassageIndex =
@@ -165,7 +244,7 @@ function ChatMessage(props: ChatMessageProp) {
       <h5 className="text-sm text-white font-[Inter]">online</h5>
     ) : (
       <h5 className="text-sm text-gray-500 w-32 h-6 font-[Inter]">
-        {textMassage}
+        {textMassage === "" ? "photo" : textMassage}
       </h5>
     );
   return (
@@ -173,7 +252,13 @@ function ChatMessage(props: ChatMessageProp) {
       <span className="flex flex-col ml-1.5 mt-2 mr-auto">
         <span className="inline-block overflow-hidden ">
           {textColor}
-          {statusColor}
+          {typingState ? (
+            <h5 className="text-sm text-gray-500 w-32 h-6 font-[Inter]">
+              Typing...
+            </h5>
+          ) : (
+            statusColor
+          )}
         </span>
       </span>
       <span className="mr-1.5">

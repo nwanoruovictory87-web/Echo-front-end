@@ -1,7 +1,35 @@
 import { userAppContext } from "../AppContext/AppContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+//*=============== type
+type UserloginData = {
+  number: string;
+  authorization: string;
+  userName: string;
+  userImage: string;
+};
+type UserData = {
+  userLoginData: UserloginData;
+  userMassageNotificationTon: string | null;
+  userCallRingintone: string | null;
+};
+type FriendListOfArrayObject = {
+  _id?: string;
+  __v?: number;
+  friendNumber?: string;
+  friendName?: string;
+  friendMassages?: object[];
+};
+type UserDetails = {
+  friendChat: object[] | undefined;
+  setFriendChat: void;
+  setUserData: void;
+  setUserFriendList: void;
+  userData: UserData;
+  userFriendList: FriendListOfArrayObject[];
+};
 function SingUpNumber() {
-  const userDetails = userAppContext();
+  const userDetails: UserDetails | null = userAppContext();
   const { userData } = userDetails;
   const urlNavigator = useNavigate();
   console.log(userDetails);
@@ -12,6 +40,7 @@ function SingUpNumber() {
     const url = "/chat";
     urlNavigator(url, { replace: true });
   }
+
   return (
     <div className="w-full h-screen">
       <span className="flex justify-center">

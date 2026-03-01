@@ -13,11 +13,26 @@ type UserData = {
   userMassageNotificationTon: string | null;
   userCallRingintone: string | null;
 };
+type FriendListOfArrayObject = {
+  _id?: string;
+  __v?: number;
+  friendNumber?: string;
+  friendName?: string;
+  friendMassages?: object[];
+};
+type UserDetails = {
+  friendChat: object[] | undefined;
+  setFriendChat: void;
+  setUserData: void;
+  setUserFriendList: void;
+  userData: UserData;
+  userFriendList: FriendListOfArrayObject[];
+};
 function Login() {
   const [phoneInput, setPhoneInput] = useState<string>("");
   const [passwordInput, setPasswordInput] = useState<string>("");
   const [phoneCanculeInput, setPhoneCanculeInput] = useState<number>(0);
-  const userDetails = userAppContext();
+  const userDetails: UserDetails | null = userAppContext();
   const { userData, setUserData } = userDetails;
   const urlNavigator = useNavigate();
   console.log(userData);
@@ -125,6 +140,8 @@ function Login() {
         userCallRingintone: null,
       };
       setUserData((prevUserData: UserData) => (prevUserData = userData));
+      const USER_DATA = "User_Data";
+      localStorage.setItem(USER_DATA, JSON.stringify(userData));
       const url = "/chat";
       urlNavigator(url, { replace: true });
     } catch (error) {
