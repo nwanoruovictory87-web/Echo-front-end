@@ -53,7 +53,7 @@ function NavigationBar() {
       (prevFriendList: FriendListOfArrayObject[]) =>
         (prevFriendList = friendsData),
     );
-    console.log("enter setFriendlist");
+    //console.log("enter setFriendlist");
     const USER_FRIENDLIST = "User_FriendList";
     localStorage.setItem(USER_FRIENDLIST, JSON.stringify(friendsData));
   }
@@ -77,14 +77,13 @@ function NavigationBar() {
         const responods = await findFriendsList.json();
         if (responods.status !== 200) return;
         const friendsData: FriendListOfArrayObject[] = responods.friends;
-        console.log(friendsData);
         updateUserFriendlist(friendsData, setUserFriendList);
       } catch (error) {
         console.log(error);
       }
     }
     findFriends();
-  }, []);
+  }, [userData]);
 
   function chat() {
     //*=============== navigation bar ui dom refrence

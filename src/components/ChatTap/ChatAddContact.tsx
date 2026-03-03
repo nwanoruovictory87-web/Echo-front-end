@@ -1,18 +1,76 @@
-import { useState } from "react";
-
+import { useState, useRef } from "react";
+import { userAppContext } from "../AppContext/AppContext";
+import { useNavigate } from "react-router-dom";
+//*=============== type firendlist
+type EchoNumber = {
+  number?: string;
+};
+type EchoFriend = {
+  _id?: string;
+  __v?: number;
+  friendNumber?: string;
+  friendName?: string;
+  friendMassages?: object[];
+};
+type Massage = {
+  date: string;
+  from: string;
+  massage: string;
+  time: string;
+  type: string;
+  url?: string | undefined;
+};
+type FriendListOfArrayObject = {
+  _id?: string;
+  __v?: number;
+  friendNumber?: string;
+  friendName?: string;
+  friendMassages?: object[];
+};
+type UserloginData = {
+  number: string;
+  authorization: string;
+  userName: string;
+  userImage: string;
+};
+type UserData = {
+  userLoginData: UserloginData;
+  userMassageNotificationTon: string;
+  userCallRingintone: string;
+};
+type UserDetails = {
+  friendChat: object[] | undefined;
+  setFriendChat: void;
+  setUserData: void;
+  setUserFriendList: void;
+  userData: UserData;
+  userFriendList: FriendListOfArrayObject[];
+};
 function ChatAddContact() {
+  const urlNavigator = useNavigate();
+  const userDetails: UserDetails = userAppContext();
+  const { userData, userFriendList, setUserFriendList } = userDetails;
   function back() {
     const url = "/chat";
-    window.location.replace(url);
+    urlNavigator(url, { replace: true });
   }
   const [inputName, setInputName] = useState<string>("");
   const [inputNumber, setInputNumber] = useState<string>("");
+  const userNmaeErrorUi = useRef(null);
+  const phoneErrorUi = useRef(null);
+  const saveContactErrorUi = useRef(null);
   //*=============== store validet username
   function storeInputName(e) {
     const data = e.target.value;
-    const userNmaeErrorUi = document.querySelector(".userName-in");
-    if (data.trim() === "") return (userNmaeErrorUi.style.borderColor = "red");
-    userNmaeErrorUi.style.borderColor = "blue";
+    const splitData = data.split("");
+    if (splitData.length < inputName.split("").length)
+      return (
+        (userNmaeErrorUi.current.style.borderColor = "red"),
+        setInputName(data)
+      );
+    if (data.trim() === "")
+      return (userNmaeErrorUi.current.style.borderColor = "red");
+    userNmaeErrorUi.current.style.borderColor = "blue";
     setInputName(data);
   }
   //*=============== store validet and formart input to Echo standerd Number formart
@@ -24,13 +82,13 @@ function ChatAddContact() {
       setInputNumber(data);
       return;
     }
-    const phoneErrorUi = document.querySelector(".phone-in");
     if (splitData[0] !== "0") {
       if (!Number(splitData[0]))
-        return (phoneErrorUi.style.borderColor = "red");
+        return (phoneErrorUi.current.style.borderColor = "red");
     }
-    if (data.trim() === "") return (phoneErrorUi.style.borderColor = "red");
-    phoneErrorUi.style.borderColor = "blue";
+    if (data.trim() === "")
+      return (phoneErrorUi.current.style.borderColor = "red");
+    phoneErrorUi.current.style.borderColor = "blue";
     if (splitData.length === 2) {
       const formartTwo = `${data}-`;
       setInputNumber(formartTwo);
@@ -39,6 +97,7 @@ function ChatAddContact() {
       setInputNumber(formartFour);
     } else if (splitData.length === 12) {
       setInputNumber(data);
+
       return;
     } else if (splitData.length > 12) {
       //12-3456-787866
@@ -54,24 +113,21 @@ function ChatAddContact() {
   }
   //*============ save validate and contact
   async function saveContact() {
-    const userNmaeErrorUi = document.querySelector(".userName-in");
-    const phoneErrorUi = document.querySelector(".phone-in");
     if (inputName.trim() === "" && inputNumber.trim() === "")
       return (
-        (userNmaeErrorUi.style.borderColor = "red"),
-        (phoneErrorUi.style.borderColor = "red")
+        (userNmaeErrorUi.current.style.borderColor = "red"),
+        (phoneErrorUi.current.style.borderColor = "red")
       );
     if (inputName.trim() === "") return;
-    userNmaeErrorUi.style.borderColor = "red";
+    userNmaeErrorUi.current.style.borderColor = "red";
 
     if (inputNumber.trim() === "") return;
-    phoneErrorUi.style.borderColor = "red";
+    phoneErrorUi.current.style.borderColor = "red";
 
-    userNmaeErrorUi.style.borderColor = "blue";
-    phoneErrorUi.style.borderColor = "blue";
+    userNmaeErrorUi.current.style.borderColor = "blue";
+    phoneErrorUi.current.style.borderColor = "blue";
     //*=============== get user number
-    const ECHO_Number = "Echo_Number";
-    const userValue = JSON.parse(localStorage.getItem(ECHO_Number));
+    const userValue = userData ? userData.userLoginData : null;
     const data = {
       userNumber: userValue.number,
       friendName: inputName,
@@ -87,15 +143,31 @@ function ChatAddContact() {
         body: JSON.stringify(data),
       });
       const responds = await saveFriendContact.json();
-      const saveContactErrorUi = document.querySelector(".status-massage");
       if (responds.status !== 200)
         return (
-          (saveContactErrorUi.textContent = responds.massage),
-          (saveContactErrorUi.style.color = "red")
+          (saveContactErrorUi.current.textContent = responds.massage),
+          (saveContactErrorUi.current.style.color = "red")
         );
+      const friendData = responds.friendData;
+      const USER_FRIENDLIST = "User_FriendList";
+      const updateUserFriendList = (setUserFriendList) => {
+        setUserFriendList((prevFriendList) => {
+          if (prevFriendList.length === 0) {
+            const data = [friendData];
+            localStorage.setItem(USER_FRIENDLIST, JSON.stringify(data));
+            return data;
+          } else {
+            const data = [...prevFriendList, friendData];
+            localStorage.setItem(USER_FRIENDLIST, JSON.stringify(data));
+            return data;
+          }
+        });
+      };
+      updateUserFriendList(setUserFriendList);
+
       return (
-        (saveContactErrorUi.style.color = "green"),
-        (saveContactErrorUi.textContent = responds.massage)
+        (saveContactErrorUi.current.style.color = "green"),
+        (saveContactErrorUi.current.textContent = responds.massage)
       );
     } catch (error) {
       console.log(error);
@@ -112,23 +184,25 @@ function ChatAddContact() {
           <span className="flex gap-4 w-full">
             <i className="fa fa-user text-3xl text-gray-300"></i>
             <input
-              className="userName-in border-b-2 border-blue-700 w-full"
+              className=" border-b-2 border-blue-700 w-full"
               placeholder="Username"
               value={inputName}
               onChange={storeInputName}
+              ref={userNmaeErrorUi}
             ></input>
           </span>
           <span className="flex gap-4 mt-12">
             <i className="fa fa-phone text-3xl text-gray-300"></i>
             <input
-              className="phone-in border-b-2 border-blue-700 w-full"
+              className=" border-b-2 border-blue-700 w-full"
               placeholder="Phone"
               value={inputNumber}
               onChange={storeInputNumber}
+              ref={phoneErrorUi}
             ></input>
           </span>
           <span className="mt-12">
-            <h5 className="font-medium status-massage"></h5>
+            <h5 className="font-medium " ref={saveContactErrorUi}></h5>
           </span>
           <span className="mt-24">
             <button

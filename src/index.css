@@ -96,3 +96,6 @@ body {
 .dateUi {
   box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.3);
 }
+.no-massage-box {
+  box-shadow: 2px 3px 3px 3px rgba(0, 0, 0, 0.3);
+}

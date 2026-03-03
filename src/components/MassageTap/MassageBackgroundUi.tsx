@@ -86,6 +86,7 @@ function MassageBackgroundUi() {
   const [fileView, setFileView] = useState();
   const [typingState, setTypingState] = useState(false);
   const typingBox = useRef(null);
+  const typingSoundAudio = useRef(null);
   const userDetails: UserDetails = userAppContext();
   const { userData, userFriendList, setUserFriendList, friendChat } =
     userDetails;
@@ -114,23 +115,26 @@ function MassageBackgroundUi() {
     }, 800);
   }, []);
   //*=============== typing sound func
-  async function typingSound() {
-    const audio = await new Audio(defultTypingSound);
-    audio.play();
-    setTimeout(() => {
-      audio.pause();
-    }, 7000);
-  }
 
   //*=============== typing animation func
   useEffect(() => {
     if (!typingState) return;
     if (!typingBox.current) return;
     typingBox.current.style.display = "flex";
-    typingSound();
+    //*=============== typing sound func
+    const audio = new Audio(defultTypingSound);
+    if (!typingSoundAudio.current) {
+      typingSoundAudio.current = audio;
+      typingSoundAudio.current.play();
+      setTimeout(() => {
+        if (!typingSoundAudio.current) return;
+        typingSoundAudio.current.pause();
+        return (typingSoundAudio.current = null);
+      }, 7000);
+    }
     const chatEndScroll = document.querySelector(".chat-end");
     chatEndScroll?.scrollIntoView({ behavior: "smooth", block: "end" });
-    const timeout = setTimeout(() => {
+    setTimeout(() => {
       if (!typingBox.current) return;
       typingBox.current.style.display = "none";
       setTypingState((prevtypingState: boolean) => (prevtypingState = false));
@@ -208,14 +212,29 @@ function MassageBackgroundUi() {
       updateFriendList(friendListUpdated, setUserFriendList);
     }
   }
-
   //*=============== get new text masssage
   useEffect(() => {
     const reciveMassage = (massage: Massage) => {
       const from = massage.from;
+      //*=============== recive new massages from friends  //*=============== recive new massages from friends
+      if (from !== friendValue.friendNumber) {
+        //*=============== recive new massage from friends and update friend chat
+        console.log("none-frendChat", from);
+        for (let i = 0; i < userFriendList.length; i++) {
+          const numberOfEachFriend = userFriendList[i].friendNumber;
+          if (numberOfEachFriend === from) {
+            //console.log("found user", numberOfEachFriend, from);
+            updateChatHistory(massage, from);
+          }
+        }
+      }
       if (from !== friendValue.friendNumber) return;
       //*=============== stop typing animation on new massage
       typingBox.current.style.display = "none";
+      if (typingSoundAudio.current) {
+        typingSoundAudio.current.pause();
+        typingSoundAudio.current = null;
+      }
       //*================= update chat
       setChat((prevChat) => {
         if (prevChat.length !== 0) return [...prevChat, massage];
@@ -234,6 +253,7 @@ function MassageBackgroundUi() {
       socket.off("recive-massage", reciveMassage);
     };
   }, []);
+
   //*================= update input onchange
   function sendTypingMassage() {
     const room = friendValue.friendNumber;

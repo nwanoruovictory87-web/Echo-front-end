@@ -82,8 +82,8 @@ function ChatMessage(props: ChatMessageProp) {
   const userDetails: UserDetails = userAppContext();
   const { userData, userFriendList, setUserFriendList } = userDetails;
   const userNumber = userData.userLoginData.number;
-  const name = props.body.friendName;
-  const friendNumber = props.body.friendNumber;
+  const name = props.body ? props.body.friendName : null;
+  const friendNumber = props.body ? props.body.friendNumber : null;
   useEffect(() => {
     socket.emit("join-room", userNumber);
   }, []);
@@ -200,11 +200,11 @@ function ChatMessage(props: ChatMessageProp) {
     return () => {
       socket.off("recive-massage", reciveMassage);
     };
-  }, []);
+  }, [userFriendList]);
   //*=============== update online status to last chat once on each render
   useEffect(() => {
     const friendValue: FriendListOfArrayObject[] = userFriendList;
-    if (!friendValue) return;
+    if (friendValue.length === 0) return;
     for (let i = 0; i < friendValue.length; i++) {
       if (friendValue[i].friendNumber === friendNumber) {
         const lastMassageIndex =

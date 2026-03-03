@@ -32,11 +32,9 @@ function Login() {
   const [phoneInput, setPhoneInput] = useState<string>("");
   const [passwordInput, setPasswordInput] = useState<string>("");
   const [phoneCanculeInput, setPhoneCanculeInput] = useState<number>(0);
-  const userDetails: UserDetails | null = userAppContext();
-  const { userData, setUserData } = userDetails;
+  const userDetails: UserDetails = userAppContext();
+  const { setUserData, setUserFriendList, setFriendChat } = userDetails;
   const urlNavigator = useNavigate();
-  console.log(userData);
-  console.log(userDetails);
   //*================= store an validate phone input
   function phoneF(e) {
     const data = e.target.value;
@@ -142,6 +140,10 @@ function Login() {
       setUserData((prevUserData: UserData) => (prevUserData = userData));
       const USER_DATA = "User_Data";
       localStorage.setItem(USER_DATA, JSON.stringify(userData));
+      const USER_FRIENDLIST = "User_FriendList";
+      localStorage.setItem(USER_FRIENDLIST, JSON.stringify([]));
+      const USER_FRIEND_CHAT = "User_Friend_Chat";
+      localStorage.setItem(USER_FRIEND_CHAT, JSON.stringify(null));
       const url = "/chat";
       urlNavigator(url, { replace: true });
     } catch (error) {

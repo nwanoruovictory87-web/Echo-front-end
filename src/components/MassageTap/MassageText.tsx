@@ -53,8 +53,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     if (day === dataDay.toString()) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className=" dateUi w-28 bg-[#2859c5b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className=" dateUi w-fit bg-[#2859c5b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               today
             </h5>
           </span>
@@ -66,8 +66,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     ) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               yesterday
             </h5>
           </span>
@@ -79,8 +79,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     ) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               2 days ago
             </h5>
           </span>
@@ -92,8 +92,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     ) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               3 days ago
             </h5>
           </span>
@@ -105,8 +105,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     ) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               4 days ago
             </h5>
           </span>
@@ -117,8 +117,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
       (Number(day) + 5).toString() === dataDay.toString()
     ) {
       <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-        <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-          <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+        <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+          <h5 className="text-gray-200 text-xl font-[Inter] break-words">
             5 days ago
           </h5>
         </span>
@@ -128,8 +128,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
       (Number(day) + 6).toString() === dataDay.toString()
     ) {
       <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-        <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-          <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+        <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+          <h5 className="text-gray-200 text-xl font-[Inter] break-words">
             6 days ago
           </h5>
         </span>
@@ -139,8 +139,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
       (Number(day) + 7).toString() <= dataDay.toString()
     ) {
       <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-        <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-          <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+        <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+          <h5 className="text-gray-200 text-xl font-[Inter] break-words">
             recently
           </h5>
         </span>
@@ -151,8 +151,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     if ((Number(month) + 1).toString() === dateMonth.toString()) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               1 month ago
             </h5>
           </span>
@@ -161,8 +161,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     } else if ((Number(month) + 2).toString() === dateMonth.toString()) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               2 month ago
             </h5>
           </span>
@@ -171,8 +171,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     } else if ((Number(month) + 3).toString() === dateMonth.toString()) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               3 month ago
             </h5>
           </span>
@@ -181,8 +181,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     } else if ((Number(month) + 4).toString() === dateMonth.toString()) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               4 month ago
             </h5>
           </span>
@@ -191,8 +191,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     } else if ((Number(month) + 5).toString() === dateMonth.toString()) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               5 month ago
             </h5>
           </span>
@@ -201,8 +201,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     } else if ((Number(month) + 6).toString() <= dateMonth.toString()) {
       return (
         <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-          <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-            <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+          <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+            <h5 className="text-gray-200 text-xl font-[Inter] break-words">
               few month ago
             </h5>
           </span>
@@ -213,8 +213,8 @@ function MassageText(props: { body: ChatData[] | undefined }) {
   const yearUi = (key: number) => {
     return (
       <span className=" bg-transparent flex justify-center" key={key + 0.2}>
-        <span className="dateUi w-32 bg-[#2b58b8b7] pl-3 pr-3 pt-0.5 pb-0.5 text-center rounded-full">
-          <h5 className="text-gray-300 text-xl font-[Inter] break-words">
+        <span className="dateUi w-fit bg-[#2b58b8b7] pl-5 pr-5 pt-0.5 pb-0.5 text-center rounded-full">
+          <h5 className="text-gray-200 text-xl font-[Inter] break-words">
             few years ago
           </h5>
         </span>
@@ -228,7 +228,6 @@ function MassageText(props: { body: ChatData[] | undefined }) {
     if (month === dateMonth.toString() && year === dateYear.toString()) {
       return dayUi(day, key);
     } else if (month !== dateMonth.toString() && year === dateYear.toString()) {
-      console.log(month, dateMonth.toString());
       return monthUi(month, key);
     } else if (year !== dateYear.toString()) {
       return yearUi(key);
@@ -389,6 +388,22 @@ function MassageText(props: { body: ChatData[] | undefined }) {
   };
   const chatUPdate = upDateChatUi();
   //console.log(fullDate.getFullYear());
-  return <div className="flex flex-col gap-[10px]">{chat && chatUPdate}</div>;
+  const startNewMassageUi = () => {
+    return (
+      <div className="flex justify-center mt-10">
+        <span className="inline-block bg-[#f1f1f1] w-fit pl-5 pr-4 pt-2 pb-2 rounded-full no-massage-box">
+          <h5 className="text-[#161616c5] text-xl font-[Inter]">
+            No Massages. Say Hi👋
+          </h5>
+        </span>
+      </div>
+    );
+  };
+  const knowMassageUi = chat?.length !== 0 ? null : startNewMassageUi();
+  return (
+    <div className="flex flex-col gap-[10px]">
+      {knowMassageUi ? knowMassageUi : chatUPdate}
+    </div>
+  );
 }
 export default MassageText;

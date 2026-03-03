@@ -19,7 +19,6 @@ function SignUp() {
   const userDetails = userAppContext();
   const { userData, setUserData } = userDetails;
   const urlNavigator = useNavigate();
-  console.log(userDetails);
   function signUpNumber() {
     const firstNBackground = document.querySelector(
       ".user-name",
@@ -72,11 +71,19 @@ function SignUp() {
       };
       const userDataRes = {
         userLoginData: userLoginData,
+        userMassageNotificationTon: null,
+        userCallRingintone: null,
       };
       //console.log(userDataRes);
       setUserData((prevUserData: UserData) => (prevUserData = userDataRes));
       //console.log(userData);
       //
+      const USER_DATA = "User_Data";
+      localStorage.setItem(USER_DATA, JSON.stringify(userDataRes));
+      const USER_FRIENDLIST = "User_FriendList";
+      localStorage.setItem(USER_FRIENDLIST, JSON.stringify([]));
+      const USER_FRIEND_CHAT = "User_Friend_Chat";
+      localStorage.setItem(USER_FRIEND_CHAT, JSON.stringify(null));
       const clientUrl = "/sign/up/number";
       urlNavigator(clientUrl, { replace: true });
     } catch (error) {
