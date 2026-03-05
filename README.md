@@ -1,127 +1,73 @@
-Echo is a modern real-time chat application built with React, TypeScript, and Vite, focused on delivering a smooth, responsive, and interactive messaging experience.
+# React + TypeScript + Vite
 
-The application supports instant messaging, live typing indicators, and real-time online/offline presence, demonstrating practical use of event-driven architecture and real-time communication patterns commonly used in production systems.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-This repository contains the frontend client of the Echo platform.
+Currently, two official plugins are available:
 
-🎯 Why Echo Matters (Project Value)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-Echo was built to showcase:
+## React Compiler
 
-Real-world real-time application design
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-Clean and scalable React architecture
+## Expanding the ESLint configuration
 
-Effective use of TypeScript for reliability
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-UI patterns used in modern chat platforms (typing indicators, presence, instant updates)
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-It reflects how real chat applications like Slack or WhatsApp behave under the hood — but in a simplified, portfolio-friendly form.
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-🚀 Key Features
-💬 Real-Time Messaging
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
 
-Messages are sent and received instantly
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-UI updates without page refresh
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-✍️ Live Typing Indicators
-
-Displays when another user is actively typing
-
-Uses real-time events for smooth UX
-
-Prevents “dead air” during conversations
-
-🟢 Online / Offline Presence
-
-Shows user availability in real time
-
-Automatically updates on connect and disconnect events
-
-⚡ High-Performance Frontend
-
-Built with Vite for fast startup and hot reload
-
-Optimized component rendering
-
-📱 Responsive UI
-
-Works seamlessly across mobile, tablet, and desktop devices
-
-🧠 Technical Overview
-
-Echo follows a client-driven real-time architecture where the frontend:
-
-Emits events for:
-
-Sending messages
-
-Typing status
-
-User presence
-
-Listens for server-broadcast events to update UI instantly
-
-Manages global socket state using React Context and hooks
-
-Example event flow:
-
-socket.emit("typing", { chatId, userId });
-socket.emit("send_message", message);
-
-socket.on("receive_message", handleNewMessage);
-socket.on("user_online", updatePresence);
-socket.on("user_offline", updatePresence);
-
-This mirrors production-grade real-time systems used in collaborative applications.
-
-🛠️ Tech Stack
-Layer	Technology
-Frontend	React
-Language	TypeScript
-Build Tool	Vite
-Styling	CSS / Tailwind CSS
-Real-Time	Socket.IO / WebSockets
-📁 Project Structure (Simplified)
-src/
-├── components/
-│   ├── MessageList.tsx
-│   ├── MessageBubble.tsx
-│   ├── TypingIndicator.tsx
-│   └── ChatInput.tsx
-├── context/
-│   └── SocketContext.tsx
-├── App.tsx
-└── main.tsx
-🔮 Planned Enhancements
-
-🔐 Authentication (JWT / OAuth)
-
-🧑‍🤝‍🧑 Group chats and rooms
-
-📦 Message persistence
-
-🔔 Notifications
-
-📎 Media sharing
-
-🌙 Dark mode
-
-✅ Message delivery & read receipts
-
-📄 License
-
-This project is licensed under the MIT License.
-
-MIT License
-
-Copyright (c) 2026 Victory Nwanoruo
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-👤 Author
-
-Victory Nwanoruo
-Frontend Engineer | React & TypeScript Developer
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
