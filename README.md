@@ -1,4 +1,3 @@
-@@ -1,127 +1,73 @@
 Echo is a modern real-time chat application built with React, TypeScript, and Vite, focused on delivering a smooth, responsive, and interactive messaging experience.
 
 The application supports instant messaging, live typing indicators, and real-time online/offline presence, demonstrating practical use of event-driven architecture and real-time communication patterns commonly used in production systems.
